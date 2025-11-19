@@ -29,7 +29,7 @@ class ProductPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     color: const Color(0xFF4d2963),
                     child: const Text(
-                      'PLACEHOLDER HEADER TEXT',
+                      'Student-run shop for official merch & gifts',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
@@ -184,7 +184,7 @@ class ProductPage extends StatelessWidget {
 
                   // Product name
                   const Text(
-                    'Placeholder Product Name',
+                    'Portsmouth City Magnet',
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -217,7 +217,7 @@ class ProductPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    'This is a placeholder description for the product. Students should replace this with real product information and implement proper data management.',
+                    'Illustrated tin magnet celebrating Portsmouth landmarks. A small, easy souvenir to brighten up your fridge or whiteboard.',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey,
@@ -234,7 +234,7 @@ class ProductPage extends StatelessWidget {
               color: Colors.grey[50],
               padding: const EdgeInsets.all(24),
               child: const Text(
-                'Placeholder Footer',
+                'Union Shop • University of Portsmouth Students\' Union',
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 16,

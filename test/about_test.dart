@@ -18,6 +18,9 @@ void main() {
     );
 
     // Footer reused from other pages
-    expect(find.text('Placeholder Footer'), findsOneWidget);
+    expect(
+      find.text("Union Shop • University of Portsmouth Students' Union"),
+      findsOneWidget,
+    );
   });
 }

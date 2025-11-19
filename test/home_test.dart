@@ -10,18 +10,23 @@ void main() {
       await tester.pump();
 
       // Top banner text
-      expect(find.text('PLACEHOLDER HEADER TEXT'), findsOneWidget);
+      expect(
+        find.text('Student-run shop for official merch & gifts'),
+        findsOneWidget,
+      ); 
 
       // Hero section
-      expect(find.text('Placeholder Hero Title'), findsOneWidget);
+      expect(find.text('Union Shop Online'), findsOneWidget);
       expect(
-        find.text('This is placeholder text for the hero section.'),
-        findsOneWidget,
-      );
+        find.text(
+        "Grab hoodies, stationery and gifts from the students' union shop.",
+      ),
+      findsOneWidget,
+    );
 
       // Products section heading + CTA button
-      expect(find.text('PRODUCTS SECTION'), findsOneWidget);
-      expect(find.text('BROWSE PRODUCTS'), findsOneWidget);
+        expect(find.text('Featured products'), findsOneWidget);
+        expect(find.text('SHOP PRODUCTS'), findsOneWidget);
     });
 
     testWidgets('displays product cards with titles and prices',
@@ -56,7 +61,10 @@ void main() {
       await tester.pumpWidget(const UnionShopApp());
       await tester.pump();
 
-      expect(find.text('Placeholder Footer'), findsOneWidget);
+      expect(
+        find.text("Union Shop • University of Portsmouth Students' Union"),
+        findsOneWidget,
+      );
     });
   });
 }

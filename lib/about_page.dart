@@ -25,7 +25,7 @@ class AboutUsPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     color: const Color(0xFF4d2963),
                     child: const Text(
-                      'PLACEHOLDER HEADER TEXT',
+                      'Student-run shop for official merch & gifts',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
@@ -186,7 +186,7 @@ class AboutUsPage extends StatelessWidget {
               color: Colors.grey[50],
               padding: const EdgeInsets.all(24),
               child: const Text(
-                'Placeholder Footer',
+                'Union Shop • University of Portsmouth Students\' Union',
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 16,
