@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 
-class ProductPage extends StatelessWidget {
-  const ProductPage({super.key});
+class AboutUsPage extends StatelessWidget {
+  const AboutUsPage({super.key});
 
   void navigateToHome(BuildContext context) {
     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-  }
-
-  void placeholderCallbackForButtons() {
-    // This is the event handler for buttons that don't work yet
   }
 
   @override
@@ -17,7 +13,7 @@ class ProductPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Header
+            // Header (same style as other pages)
             Container(
               height: 100,
               color: Colors.white,
@@ -54,8 +50,10 @@ class ProductPage extends StatelessWidget {
                                   width: 18,
                                   height: 18,
                                   child: const Center(
-                                    child: Icon(Icons.image_not_supported,
-                                        color: Colors.grey),
+                                    child: Icon(
+                                      Icons.image_not_supported,
+                                      color: Colors.grey,
+                                    ),
                                   ),
                                 );
                               },
@@ -78,7 +76,7 @@ class ProductPage extends StatelessWidget {
                                     minWidth: 32,
                                     minHeight: 32,
                                   ),
-                                  onPressed: placeholderCallbackForButtons,
+                                  onPressed: () {},
                                 ),
                                 IconButton(
                                   icon: const Icon(
@@ -91,7 +89,7 @@ class ProductPage extends StatelessWidget {
                                     minWidth: 32,
                                     minHeight: 32,
                                   ),
-                                  onPressed: placeholderCallbackForButtons,
+                                  onPressed: () {},
                                 ),
                                 IconButton(
                                   icon: const Icon(
@@ -104,7 +102,7 @@ class ProductPage extends StatelessWidget {
                                     minWidth: 32,
                                     minHeight: 32,
                                   ),
-                                  onPressed: placeholderCallbackForButtons,
+                                  onPressed: () {},
                                 ),
                                 IconButton(
                                   icon: const Icon(
@@ -117,12 +115,8 @@ class ProductPage extends StatelessWidget {
                                     minWidth: 32,
                                     minHeight: 32,
                                   ),
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, '/about');
-                                  },
+                                  onPressed: () {},
                                 ),
-
-
                               ],
                             ),
                           ),
@@ -134,101 +128,59 @@ class ProductPage extends StatelessWidget {
               ),
             ),
 
-            // Product details
+            // Main About content
             Container(
               color: Colors.white,
+              width: double.infinity,
               padding: const EdgeInsets.all(24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Product image
-                  Container(
-                    height: 300,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.grey[200],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.network(
-                        'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            color: Colors.grey[300],
-                            child: const Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.image_not_supported,
-                                    size: 64,
-                                    color: Colors.grey,
-                                  ),
-                                  SizedBox(height: 8),
-                                  Text(
-                                    'Image unavailable',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Product name
-                  const Text(
-                    'Placeholder Product Name',
+                children: const [
+                  SizedBox(height: 8),
+                  Text(
+                    'About the Union Shop',
                     style: TextStyle(
-                      fontSize: 28,
+                      fontSize: 26,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
                   ),
-
-                  const SizedBox(height: 12),
-
-                  // Product price
-                  const Text(
-                    '£15.00',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF4d2963),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Product description
-                  const Text(
-                    'Description',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'This is a placeholder description for the product. Students should replace this with real product information and implement proper data management.',
+                  SizedBox(height: 16),
+                  Text(
+                    'The Union Shop is operated by the Students\' Union and '
+                    'provides official University of Portsmouth merchandise, '
+                    'clothing, gifts and everyday essentials for students.',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.grey,
                       height: 1.5,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  SizedBox(height: 12),
+                  Text(
+                    'Every purchase helps to support student activities, clubs '
+                    'and societies run by the Students\' Union.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      height: 1.5,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  SizedBox(height: 12),
+                  Text(
+                    'You can visit us on campus or browse a selection of items '
+                    'online through this shop experience.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      height: 1.5,
+                      color: Colors.grey,
                     ),
                   ),
                 ],
               ),
             ),
 
-            // Footer
+            // Footer (same as other pages)
             Container(
               width: double.infinity,
               color: Colors.grey[50],
