@@ -67,4 +67,13 @@ void main() {
       );
     });
   });
+
+    testWidgets('home menu shows navigation items', (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: HomeScreen()));
+    await tester.tap(find.byIcon(Icons.menu));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Home'), findsOneWidget);
+    expect(find.text('About the Union Shop'), findsOneWidget);
+    });
 }
