@@ -1,0 +1,41 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:union_shop/collection_detail_page.dart';
+
+void main() {
+  testWidgets(
+      'CollectionDetailPage shows correct title, filters and products for Clothing',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: CollectionDetailPage.forTitle('Clothing'),
+      ),
+    );
+    await tester.pump();
+
+    // Title in app bar and heading
+    expect(find.text('Clothing'), findsWidgets);
+
+    // Subtitle
+    expect(
+      find.text('Shop all of this seasons must haves in one place!'),
+      findsOneWidget,
+    );
+
+    // Filter / sort UI
+    expect(find.text('Filter by'), findsOneWidget);
+    expect(find.text('Sort by'), findsOneWidget);
+    expect(find.text('All products'), findsOneWidget);
+    expect(find.text('Featured'), findsOneWidget);
+
+    // Product grid present
+    expect(
+      find.byKey(const ValueKey('collection-products-grid')),
+      findsOneWidget,
+    );
+
+    // At least one of the dummy products appears
+    expect(find.text('Green Sweatshirt'), findsOneWidget);
+    expect(find.text('Purple Hoodie'), findsOneWidget);
+  });
+}
