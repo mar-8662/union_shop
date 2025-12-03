@@ -98,6 +98,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Home'), findsOneWidget);
+    expect(find.text('Collections'), findsOneWidget);
     expect(find.text('About the Union Shop'), findsOneWidget);
   });
+
 }
