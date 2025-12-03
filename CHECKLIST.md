@@ -18,7 +18,7 @@ Use this checklist to track which spec items you’ve implemented.
   - Separate page from the homepage  
   - Static company information about the Union Shop
 
-- [ ] **Footer** (4%)  
+- [x] **Footer** (4%)  
   - Footer widget with dummy links/info  
   - Present on at least one page (preferably reused everywhere)
 
