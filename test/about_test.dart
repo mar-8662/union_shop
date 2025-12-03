@@ -13,7 +13,7 @@ void main() {
 
     // Body text (just check part of it)
     expect(
-      find.textContaining('operated by the Students\' Union'),
+      find.textContaining("operated by the Students' Union"),
       findsOneWidget,
     );
 
@@ -22,5 +22,8 @@ void main() {
       find.text("Union Shop • University of Portsmouth Students' Union"),
       findsOneWidget,
     );
+
+    // Dummy footer links
+    expect(find.text('Contact us'), findsOneWidget);
   });
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:union_shop/footer.dart';
+
 
 class ProductPage extends StatelessWidget {
   const ProductPage({super.key});
@@ -263,19 +265,7 @@ class ProductPage extends StatelessWidget {
             ),
 
             // Footer
-            Container(
-              width: double.infinity,
-              color: Colors.grey[50],
-              padding: const EdgeInsets.all(24),
-              child: const Text(
-                'Union Shop • University of Portsmouth Students\' Union',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
+            const UnionFooter(),
           ],
         ),
       ),

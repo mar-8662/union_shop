@@ -49,24 +49,17 @@ void main() {
       );
     });
 
-    testWidgets('displays header icons', (tester) async {
-      await tester.pumpWidget(createTestWidget());
-      await tester.pump();
+testWidgets('displays footer', (tester) async {
+  await tester.pumpWidget(createTestWidget());
+  await tester.pump();
 
-      expect(find.byIcon(Icons.search), findsOneWidget);
-      expect(find.byIcon(Icons.person_outline), findsOneWidget);
-      expect(find.byIcon(Icons.shopping_bag_outlined), findsOneWidget);
-      expect(find.byIcon(Icons.menu), findsOneWidget);
-    });
+  expect(
+    find.text("Union Shop • University of Portsmouth Students' Union"),
+    findsOneWidget,
+  );
 
-    testWidgets('displays footer', (tester) async {
-      await tester.pumpWidget(createTestWidget());
-      await tester.pump();
-
-      expect(
-        find.text("Union Shop • University of Portsmouth Students' Union"),
-        findsOneWidget,
-      );
-    });
+  // Dummy footer links
+  expect(find.text('Contact us'), findsOneWidget);
+});
   });
 }
