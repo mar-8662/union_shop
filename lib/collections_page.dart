@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:union_shop/collection_detail_page.dart';
 
 class CollectionsPage extends StatelessWidget {
   const CollectionsPage({super.key});
@@ -91,30 +92,41 @@ class _CollectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
+    return InkWell(
       key: ValueKey('collection-${collection.title}'),
-      borderRadius: BorderRadius.circular(4),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.network(
-            collection.imageUrl,
-            fit: BoxFit.cover,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) =>
+                CollectionDetailPage.forTitle(collection.title),
           ),
-          Container(
-            color: Colors.black.withOpacity(0.35),
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              collection.title,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+        );
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(4),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.network(
+              collection.imageUrl,
+              fit: BoxFit.cover,
             ),
-          ),
-        ],
+            Container(
+              color: Colors.black.withOpacity(0.35),
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                collection.title,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
