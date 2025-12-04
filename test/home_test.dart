@@ -12,16 +12,20 @@ void main() {
     await mockNetworkImagesFor(() async {
       await tester.pumpWidget(const UnionShopApp());
 
+      // Top sale banner
       expect(
         find.textContaining('BIG SALE! OUR ESSENTIAL RANGE HAS DROPPED'),
         findsOneWidget,
       );
 
-      expect(find.text('Home'), findsOneWidget);
-      expect(find.text('Collections'), findsOneWidget);
-      expect(find.text('SALE!'), findsOneWidget);
-      expect(find.text('About'), findsOneWidget);
+      // There are nav items both in the app bar and in the body nav row,
+      // so we just assert they exist (not the exact count).
+      expect(find.text('Home'), findsWidgets);
+      expect(find.text('Collections'), findsWidgets);
+      expect(find.text('SALE!'), findsWidgets);
+      expect(find.text('About'), findsWidgets);
 
+      // Hero section
       expect(
         find.text('Essential Range - Over 20% OFF!'),
         findsOneWidget,
@@ -29,8 +33,10 @@ void main() {
       expect(find.text('BROWSE COLLECTION'), findsOneWidget);
 
       // Scroll a bit to make sure featured products are in view
-      await tester.drag(find.byType(SingleChildScrollView).first,
-          const Offset(0, -10));
+      await tester.drag(
+        find.byType(SingleChildScrollView).first,
+        const Offset(0, -10),
+      );
       await tester.pump();
 
       expect(find.text('Featured products'), findsOneWidget);
@@ -43,11 +49,14 @@ void main() {
     await mockNetworkImagesFor(() async {
       await tester.pumpWidget(const UnionShopApp());
 
-      await tester.tap(find.text('Collections'));
+      // Tap the Collections item in the BODY nav row,
+      // which is the one that actually navigates.
+      await tester.tap(find.byKey(const ValueKey('body_nav_collections')));
       await tester.pumpAndSettle();
 
       expect(find.byType(CollectionsPage), findsOneWidget);
-      expect(find.text('Collections'), findsOneWidget);
+      // There may be multiple "Collections" labels (title, nav, etc.)
+      expect(find.text('Collections'), findsWidgets);
       expect(find.text('Autumn Favourites'), findsWidgets);
     });
   });
@@ -75,9 +84,8 @@ void main() {
       (WidgetTester tester) async {
     await tester.pumpWidget(const UnionShopApp());
 
-    expect(find.text('Sign in'), findsOneWidget);
+    // "Sign in" appears in the body nav row and in the app bar nav.
+    expect(find.text('Sign in'), findsWidgets);
     expect(find.text('The Print Shack'), findsNothing);
   });
-
-
 }

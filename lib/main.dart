@@ -6,6 +6,8 @@ import 'package:union_shop/models/collection_product.dart';
 import 'package:union_shop/product_page.dart';
 import 'package:union_shop/sale_page.dart';
 import 'package:union_shop/sign_in_page.dart';
+import 'package:union_shop/widgets/responsive_navbar.dart';
+
 
 void main() {
   runApp(const UnionShopApp());
@@ -69,6 +71,7 @@ class HomeScreen extends StatelessWidget {
     final bool isWide = MediaQuery.of(context).size.width >= 800;
 
     return Scaffold(
+      appBar: const ResponsiveNavbar(),
       body: Column(
         children: [
           // Top sale banner
@@ -100,28 +103,33 @@ class HomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 24),
                   TextButton(
+                    key: const ValueKey('body_nav_home'),
                     onPressed: () {},
                     child: const Text('Home'),
                   ),
                   TextButton(
+                    key: const ValueKey('body_nav_collections'),
                     onPressed: () {
                       Navigator.pushNamed(context, '/collections');
                     },
                     child: const Text('Collections'),
                   ),
                   TextButton(
+                    key: const ValueKey('body_nav_sale'),
                     onPressed: () {
                       Navigator.pushNamed(context, '/sale');
                     },
-                    child: const Text('SALE!')
+                    child: const Text('SALE!'),
                   ),
                   TextButton(
+                    key: const ValueKey('body_nav_about'),
                     onPressed: () {
                       Navigator.pushNamed(context, '/about');
                     },
                     child: const Text('About'),
                   ),
                   TextButton(
+                    key: const ValueKey('body_nav_signin'),
                     onPressed: () {
                       Navigator.pushNamed(context, '/signin');
                     },
@@ -129,9 +137,9 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-
             ),
           ),
+
 
           // Scrollable page content
           Expanded(

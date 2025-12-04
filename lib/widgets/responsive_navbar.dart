@@ -15,47 +15,71 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
+        // Desktop / large view breakpoint
         final bool isDesktop = constraints.maxWidth >= 800;
 
         if (isDesktop) {
-          // DESKTOP / LARGE VIEW: static navbar with links
+          // DESKTOP: static navbar with links
           return AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: theme.colorScheme.primary,
             elevation: 0,
-            titleSpacing: 24,
-            title: Row(
-              children: [
-                Text(
-                  'Union Shop',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+            titleSpacing: 16,
+            title: SingleChildScrollView(
+              // This prevents the Row from overflowing in tests by allowing
+              // horizontal scrolling if the content is wider than the AppBar.
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  Text(
+                    'Union Shop',
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 32),
-                // The links do not need to work for the brief,
-                // but you can uncomment the Navigator lines later if you want.
-                _NavLink(label: 'Home', onTap: () {
-                  // Navigator.pushNamed(context, '/');
-                }),
-                _NavLink(label: 'Collections', onTap: () {
-                  // Navigator.pushNamed(context, '/collections');
-                }),
-                _NavLink(label: 'Sale', onTap: () {
-                  // Navigator.pushNamed(context, '/sale');
-                }),
-                _NavLink(label: 'About', onTap: () {
-                  // Navigator.pushNamed(context, '/about');
-                }),
-                _NavLink(label: 'Sign in', onTap: () {
-                  // Navigator.pushNamed(context, '/signin');
-                }),
-              ],
+                  const SizedBox(width: 24),
+                  _NavLink(
+                    label: 'Home',
+                    navKey: const ValueKey('nav_home_desktop'),
+                    onTap: () {
+                      // Navigator.pushNamed(context, '/');
+                    },
+                  ),
+                  _NavLink(
+                    label: 'Collections',
+                    navKey: const ValueKey('nav_collections_desktop'),
+                    onTap: () {
+                      // Navigator.pushNamed(context, '/collections');
+                    },
+                  ),
+                  _NavLink(
+                    label: 'Sale',
+                    navKey: const ValueKey('nav_sale_desktop'),
+                    onTap: () {
+                      // Navigator.pushNamed(context, '/sale');
+                    },
+                  ),
+                  _NavLink(
+                    label: 'About',
+                    navKey: const ValueKey('nav_about_desktop'),
+                    onTap: () {
+                      // Navigator.pushNamed(context, '/about');
+                    },
+                  ),
+                  _NavLink(
+                    label: 'Sign in',
+                    navKey: const ValueKey('nav_signin_desktop'),
+                    onTap: () {
+                      // Navigator.pushNamed(context, '/signin');
+                    },
+                  ),
+                ],
+              ),
             ),
           );
         } else {
-          // MOBILE VIEW: navbar collapses to a menu button
+          // MOBILE: collapses to a menu button
           return AppBar(
             backgroundColor: theme.colorScheme.primary,
             elevation: 0,
@@ -74,11 +98,26 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: const [
-                              _MobileNavItem(label: 'Home'),
-                              _MobileNavItem(label: 'Collections'),
-                              _MobileNavItem(label: 'Sale'),
-                              _MobileNavItem(label: 'About'),
-                              _MobileNavItem(label: 'Sign in'),
+                              _MobileNavItem(
+                                label: 'Home',
+                                navKey: ValueKey('nav_home_mobile'),
+                              ),
+                              _MobileNavItem(
+                                label: 'Collections',
+                                navKey: ValueKey('nav_collections_mobile'),
+                              ),
+                              _MobileNavItem(
+                                label: 'Sale',
+                                navKey: ValueKey('nav_sale_mobile'),
+                              ),
+                              _MobileNavItem(
+                                label: 'About',
+                                navKey: ValueKey('nav_about_mobile'),
+                              ),
+                              _MobileNavItem(
+                                label: 'Sign in',
+                                navKey: ValueKey('nav_signin_mobile'),
+                              ),
                             ],
                           ),
                         );
@@ -98,10 +137,12 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
 class _NavLink extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
+  final Key? navKey;
 
   const _NavLink({
     required this.label,
     required this.onTap,
+    this.navKey,
   });
 
   @override
@@ -109,6 +150,7 @@ class _NavLink extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: TextButton(
+        key: navKey,
         onPressed: onTap,
         child: Text(
           label,
@@ -124,16 +166,21 @@ class _NavLink extends StatelessWidget {
 
 class _MobileNavItem extends StatelessWidget {
   final String label;
+  final Key? navKey;
 
-  const _MobileNavItem({required this.label});
+  const _MobileNavItem({
+    required this.label,
+    this.navKey,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      key: navKey,
       title: Text(label),
-      // For the coursework, links don’t have to navigate anywhere.
+      // For the coursework, these do not need to navigate.
       onTap: () {
-        Navigator.pop(context); // just close the menu
+        Navigator.pop(context); // just close the sheet
       },
     );
   }
