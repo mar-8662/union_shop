@@ -5,6 +5,7 @@ import 'package:union_shop/footer.dart';
 import 'package:union_shop/models/collection_product.dart';
 import 'package:union_shop/product_page.dart';
 import 'package:union_shop/sale_page.dart';
+import 'package:union_shop/sign_in_page.dart';
 
 void main() {
   runApp(const UnionShopApp());
@@ -26,6 +27,7 @@ class UnionShopApp extends StatelessWidget {
         '/collections': (context) => const CollectionsPage(),
         '/about': (context) => const AboutUsPage(),
         '/sale': (context) => const SalePage(), 
+        '/signin': (context) => const SignInPage(),
       },
     );
   }
@@ -108,14 +110,10 @@ class HomeScreen extends StatelessWidget {
                     child: const Text('Collections'),
                   ),
                   TextButton(
-                    onPressed: () {},
-                    child: const Text('The Print Shack'),
-                  ),
-                  TextButton(
                     onPressed: () {
                       Navigator.pushNamed(context, '/sale');
                     },
-                    child: const Text('SALE!'),
+                    child: const Text('SALE!')
                   ),
                   TextButton(
                     onPressed: () {
@@ -123,8 +121,15 @@ class HomeScreen extends StatelessWidget {
                     },
                     child: const Text('About'),
                   ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/signin');
+                    },
+                    child: const Text('Sign in'),
+                  ),
                 ],
               ),
+
             ),
           ),
 

@@ -34,7 +34,7 @@ Use this checklist to track which spec items you’ve implemented.
   - Product details page with image(s), price, description  
   - Includes dropdowns, buttons, and other widgets (do not need to function yet)
 
-- [ ] **Sale Collection Page** (4%)  
+- [x] **Sale Collection Page** (4%)  
   - Page listing “sale” products  
   - Shows discounted prices and basic promo messaging
 

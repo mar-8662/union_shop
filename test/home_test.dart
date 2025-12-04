@@ -70,4 +70,14 @@ void main() {
       expect(find.text('ADD TO CART'), findsOneWidget);
     });
   });
+
+  testWidgets('Home page has Sign in nav and no Print Shack',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const UnionShopApp());
+
+    expect(find.text('Sign in'), findsOneWidget);
+    expect(find.text('The Print Shack'), findsNothing);
+  });
+
+
 }
