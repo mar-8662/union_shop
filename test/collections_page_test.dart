@@ -19,13 +19,10 @@ void main() {
       // Page title
       expect(find.text('Collections'), findsOneWidget);
 
-      // A few key collection titles from productIdsByCollection
-      // (some others may be off-screen in the scrollable grid).
+      // At least a couple of known collections from productIdsByCollection
+      // (others may be off-screen due to pagination).
       expect(find.text('Autumn Favourites'), findsWidgets);
       expect(find.text('Black Friday'), findsWidgets);
-      expect(find.text('Clothing'), findsWidgets);
-      // We deliberately don't assert on "Essential Range" here because its
-      // tile may be off-screen and not yet built by the GridView.
 
       // The grid itself exists
       expect(
@@ -65,6 +62,67 @@ void main() {
 
       expect(find.byType(ProductPage), findsOneWidget);
       expect(find.text('Classic Sweatshirt - Black'), findsWidgets);
+    });
+  });
+
+  testWidgets('Collections filter and sort widgets work',
+      (WidgetTester tester) async {
+    await mockNetworkImagesFor(() async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: CollectionsPage(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Initially: All collections
+      expect(find.text('All collections'), findsOneWidget);
+      expect(find.text('A-Z'), findsOneWidget);
+
+      // Filter by "Sale" – should hide Autumn Favourites and show the sale ones
+      await tester.tap(find.text('All collections').first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Sale').last);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Autumn Favourites'), findsNothing);
+      expect(find.text('Black Friday'), findsWidgets);
+      expect(find.text('Elections Discounts'), findsWidgets);
+
+      // Change sorting option – just check that the chosen label updates
+      await tester.tap(find.text('A-Z').first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Z-A').last);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Z-A'), findsWidgets);
+    });
+  });
+
+  testWidgets('Collections pagination shows different pages',
+      (WidgetTester tester) async {
+    await mockNetworkImagesFor(() async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: CollectionsPage(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // With page size 4 and 6 total, there should be at least 2 pages.
+      // On the first page we should see "Autumn Favourites"
+      expect(find.text('Autumn Favourites'), findsWidgets);
+
+      final nextButton =
+          find.byKey(const ValueKey('collections_next_page'));
+
+      await tester.tap(nextButton);
+      await tester.pumpAndSettle();
+
+      // On the second page, Autumn Favourites should be gone,
+      // and later collections such as "Elections Discounts" should appear.
+      expect(find.text('Autumn Favourites'), findsNothing);
+      expect(find.text('Elections Discounts'), findsWidgets);
     });
   });
 }
