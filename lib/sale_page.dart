@@ -104,7 +104,7 @@ class SalePage extends StatelessWidget {
           ),
 
           // Re-use your existing footer to keep layout consistent
-          const Footer(),
+          const UnionFooter(),
         ],
       ),
     );
@@ -178,8 +178,11 @@ class _SaleFilterBar extends StatelessWidget {
           );
         }
 
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        // Wide layout: use Wrap instead of Row to avoid overflow
+        return Wrap(
+          spacing: 24,
+          runSpacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             filterRow,
             sortRow,

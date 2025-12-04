@@ -113,7 +113,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/collections');
+                      Navigator.pushNamed(context, '/sale');
                     },
                     child: const Text('SALE!'),
                   ),
