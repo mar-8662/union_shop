@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:union_shop/data/product_data.dart';
 import 'package:union_shop/models/collection_product.dart';
+import 'package:union_shop/models/product.dart';
 import 'package:union_shop/product_page.dart';
 
-class CollectionDetailPage extends StatelessWidget {
+class CollectionDetailPage extends StatefulWidget {
   final String collectionTitle;
 
   const CollectionDetailPage({
@@ -11,7 +14,7 @@ class CollectionDetailPage extends StatelessWidget {
     required this.collectionTitle,
   });
 
-  /// Named constructor used by tests: CollectionDetailPage.forTitle('Clothing')
+  /// Convenience constructor used in tests
   const CollectionDetailPage.forTitle(
     String title, {
     Key? key,
@@ -19,24 +22,119 @@ class CollectionDetailPage extends StatelessWidget {
         super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    // Get the real Product models for this collection from product_data.dart
-    final productModels = productsForCollection(collectionTitle);
+  State<CollectionDetailPage> createState() => _CollectionDetailPageState();
+}
 
-    // Convert them into the simpler CollectionProduct view-model
-    final List<CollectionProduct> products = productModels
-        .map(
-          (p) => CollectionProduct(
-            name: p.name,
-            price: '£${p.price.toStringAsFixed(2)}',
-            imageUrl: p.mainImage,
-          ),
-        )
-        .toList(growable: false);
+class _CollectionDetailPageState extends State<CollectionDetailPage> {
+  static const int _pageSize = 6;
+
+  late final List<Product> _allProducts;
+  late final List<String> _filterOptions;
+
+  String _selectedFilter = 'All products';
+  String _selectedSort = 'Featured';
+  int _currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 1) Load products for this collection from the shared data model
+    _allProducts = productsForCollection(widget.collectionTitle);
+
+    // 2) Build filter options from the Product.collection field
+    final categories = _allProducts.map((p) => p.collection).toSet().toList()
+      ..sort();
+    _filterOptions = ['All products', ...categories];
+  }
+
+  // ---- derived lists ----
+
+  List<Product> get _filteredAndSorted {
+    // Filtering
+    List<Product> list;
+    if (_selectedFilter == 'All products') {
+      list = List<Product>.from(_allProducts);
+    } else {
+      list = _allProducts
+          .where((p) => p.collection == _selectedFilter)
+          .toList(growable: false);
+    }
+
+    // Sorting
+    switch (_selectedSort) {
+      case 'Price: Low to High':
+        list.sort((a, b) => a.price.compareTo(b.price));
+        break;
+      case 'Price: High to Low':
+        list.sort((a, b) => b.price.compareTo(a.price));
+        break;
+      case 'Alphabetical A–Z':
+        list.sort((a, b) => a.name.compareTo(b.name));
+        break;
+      case 'Featured':
+      default:
+        // leave in original order
+        break;
+    }
+
+    return list;
+  }
+
+  int get _totalProducts => _filteredAndSorted.length;
+
+  int get _totalPages {
+    if (_totalProducts == 0) return 1;
+    return ((_totalProducts - 1) / _pageSize).floor() + 1;
+  }
+
+  List<Product> get _pageItems {
+    final list = _filteredAndSorted;
+    if (list.isEmpty) return const <Product>[];
+
+    final start = _currentPage * _pageSize;
+    final end = min(start + _pageSize, list.length);
+    if (start >= list.length) return const <Product>[];
+
+    return list.sublist(start, end);
+  }
+
+  // ---- handlers ----
+
+  void _onFilterChanged(String? value) {
+    if (value == null) return;
+    setState(() {
+      _selectedFilter = value;
+      _currentPage = 0; // reset page when filter changes
+    });
+  }
+
+  void _onSortChanged(String? value) {
+    if (value == null) return;
+    setState(() {
+      _selectedSort = value;
+    });
+  }
+
+  void _goToPreviousPage() {
+    setState(() {
+      if (_currentPage > 0) _currentPage--;
+    });
+  }
+
+  void _goToNextPage() {
+    setState(() {
+      if (_currentPage < _totalPages - 1) _currentPage++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final products = _pageItems;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(collectionTitle),
+        title: Text(widget.collectionTitle),
         centerTitle: true,
       ),
       body: LayoutBuilder(
@@ -53,46 +151,107 @@ class CollectionDetailPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Page heading
+                  // Heading (matches your screenshot text)
                   Text(
-                    collectionTitle,
+                    widget.collectionTitle,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    // Match your test text exactly
-                    "Shop all of this seasons must haves in one place!",
+                    'Shop all of this seasons must haves in one place!',
                   ),
                   const SizedBox(height: 24),
 
-                  // Filters / sort row (UI only but functional enough for coursework)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Wrap(
-                        spacing: 16,
-                        runSpacing: 8,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: const [
-                          Text('Filter by'),
-                          _DropdownChip(label: 'All products'),
-                          Text('Sort by'),
-                          _DropdownChip(label: 'Featured'),
+                  // FILTER / SORT / COUNT ROW
+                  LayoutBuilder(
+                    builder: (context, innerConstraints) {
+                      final isNarrow = innerConstraints.maxWidth < 700;
+
+                      final filterRow = Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text('Filter by'),
+                          const SizedBox(width: 8),
+                          DropdownButton<String>(
+                            key: const Key('collection_filter_dropdown'),
+                            value: _selectedFilter,
+                            items: _filterOptions
+                                .map(
+                                  (opt) => DropdownMenuItem<String>(
+                                    value: opt,
+                                    child: Text(opt),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: _onFilterChanged,
+                          ),
                         ],
-                      ),
-                      const SizedBox(height: 8),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Text('${products.length} products'),
-                      ),
-                    ],
+                      );
+
+                      final sortRow = Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text('Sort by'),
+                          const SizedBox(width: 8),
+                          DropdownButton<String>(
+                            key: const Key('collection_sort_dropdown'),
+                            value: _selectedSort,
+                            items: const [
+                              'Featured',
+                              'Price: Low to High',
+                              'Price: High to Low',
+                              'Alphabetical A–Z',
+                            ]
+                                .map(
+                                  (opt) => DropdownMenuItem<String>(
+                                    value: opt,
+                                    child: Text(opt),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: _onSortChanged,
+                          ),
+                        ],
+                      );
+
+                      final countText = Text('$_totalProducts products');
+
+                      if (isNarrow) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            filterRow,
+                            const SizedBox(height: 8),
+                            sortRow,
+                            const SizedBox(height: 8),
+                            countText,
+                          ],
+                        );
+                      }
+
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Wrap(
+                            spacing: 24,
+                            runSpacing: 8,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              filterRow,
+                              sortRow,
+                            ],
+                          ),
+                          countText,
+                        ],
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 24),
 
-                  // Products grid
+                  // PRODUCTS GRID (still using your existing card layout)
                   GridView.builder(
                     key: const ValueKey('collection-products-grid'),
                     shrinkWrap: true,
@@ -106,39 +265,46 @@ class CollectionDetailPage extends StatelessWidget {
                     itemCount: products.length,
                     itemBuilder: (context, index) {
                       final product = products[index];
-                      return _ProductCard(product: product);
+                      final viewModel = CollectionProduct(
+                        name: product.name,
+                        price: '£${product.price.toStringAsFixed(2)}',
+                        imageUrl: product.mainImage,
+                      );
+                      return _ProductCard(product: viewModel);
                     },
                   ),
+
+                  const SizedBox(height: 16),
+
+                  // PAGINATION
+                  if (_totalProducts > _pageSize)
+                    Center(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            key: const Key('collection_prev_page'),
+                            onPressed: _currentPage == 0
+                                ? null
+                                : _goToPreviousPage,
+                            icon: const Icon(Icons.chevron_left),
+                          ),
+                          Text('Page ${_currentPage + 1} of $_totalPages'),
+                          IconButton(
+                            key: const Key('collection_next_page'),
+                            onPressed: _currentPage >= _totalPages - 1
+                                ? null
+                                : _goToNextPage,
+                            icon: const Icon(Icons.chevron_right),
+                          ),
+                        ],
+                      ),
+                    ),
                 ],
               ),
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class _DropdownChip extends StatelessWidget {
-  final String label;
-
-  const _DropdownChip({required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.shade400),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(label),
-          const SizedBox(width: 4),
-          const Icon(Icons.arrow_drop_down, size: 18),
-        ],
       ),
     );
   }
@@ -170,7 +336,7 @@ class _ProductCard extends StatelessWidget {
               child: Image.network(
                 product.imageUrl,
                 fit: BoxFit.cover,
-                // Avoid test crashes when HTTP 400 happens in flutter test.
+                // Avoid test crashes when HTTP fails in flutter test.
                 errorBuilder: (context, error, stackTrace) {
                   return Container(color: Colors.grey.shade300);
                 },

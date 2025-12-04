@@ -52,7 +52,7 @@ Use this checklist to track which spec items you’ve implemented.
 
 ### 1.2 Intermediate Features (35% of application mark)
 
-- [ ] **Dynamic Collections Page** (6%)  
+- [x] **Dynamic Collections Page** (6%)  
   - Collections loaded from data models or services  
   - Sorting / filtering / pagination widgets that actually work
 
