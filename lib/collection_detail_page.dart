@@ -1,8 +1,7 @@
-import 'dart:math';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:union_shop/data/product_data.dart';
-import 'package:union_shop/models/collection_product.dart';
 import 'package:union_shop/models/product.dart';
 import 'package:union_shop/product_page.dart';
 
@@ -14,7 +13,7 @@ class CollectionDetailPage extends StatefulWidget {
     required this.collectionTitle,
   });
 
-  /// Convenience constructor used in tests
+  /// Named constructor used by tests: CollectionDetailPage.forTitle('Clothing')
   const CollectionDetailPage.forTitle(
     String title, {
     Key? key,
@@ -26,86 +25,87 @@ class CollectionDetailPage extends StatefulWidget {
 }
 
 class _CollectionDetailPageState extends State<CollectionDetailPage> {
-  static const int _pageSize = 6;
+  static const int _pageSize = 8;
 
   late final List<Product> _allProducts;
-  late final List<String> _filterOptions;
 
   String _selectedFilter = 'All products';
   String _selectedSort = 'Featured';
   int _currentPage = 0;
 
+  static const List<String> _filterOptions = [
+    'All products',
+    'Hoodies & Sweatshirts',
+    'T-Shirts',
+    'Outerwear',
+    'Accessories',
+    'Print Shack',
+  ];
+
+  static const List<String> _sortOptions = [
+    'Featured',
+    'Price: Low to High',
+    'Price: High to Low',
+    'Alphabetical A–Z',
+  ];
+
   @override
   void initState() {
     super.initState();
-
-    // 1) Load products for this collection from the shared data model
     _allProducts = productsForCollection(widget.collectionTitle);
-
-    // 2) Build filter options from the Product.collection field
-    final categories = _allProducts.map((p) => p.collection).toSet().toList()
-      ..sort();
-    _filterOptions = ['All products', ...categories];
   }
 
-  // ---- derived lists ----
+  List<Product> get _filteredProducts {
+    if (_selectedFilter == 'All products') return _allProducts;
 
-  List<Product> get _filteredAndSorted {
-    // Filtering
-    List<Product> list;
-    if (_selectedFilter == 'All products') {
-      list = List<Product>.from(_allProducts);
-    } else {
-      list = _allProducts
-          .where((p) => p.collection == _selectedFilter)
-          .toList(growable: false);
-    }
+    return _allProducts
+        .where((p) => p.collection == _selectedFilter)
+        .toList(growable: false);
+  }
 
-    // Sorting
+  List<Product> get _sortedProducts {
+    final products = List<Product>.from(_filteredProducts);
+
     switch (_selectedSort) {
       case 'Price: Low to High':
-        list.sort((a, b) => a.price.compareTo(b.price));
+        products.sort((a, b) => a.price.compareTo(b.price));
         break;
       case 'Price: High to Low':
-        list.sort((a, b) => b.price.compareTo(a.price));
+        products.sort((a, b) => b.price.compareTo(a.price));
         break;
       case 'Alphabetical A–Z':
-        list.sort((a, b) => a.name.compareTo(b.name));
+        products.sort((a, b) => a.name.compareTo(b.name));
         break;
       case 'Featured':
       default:
-        // leave in original order
+        // Keep original order (as from data model).
         break;
     }
 
-    return list;
+    return products;
   }
 
-  int get _totalProducts => _filteredAndSorted.length;
-
   int get _totalPages {
-    if (_totalProducts == 0) return 1;
-    return ((_totalProducts - 1) / _pageSize).floor() + 1;
+    final total = _sortedProducts.length;
+    if (total == 0) return 1;
+    return ((total - 1) / _pageSize).floor() + 1;
   }
 
   List<Product> get _pageItems {
-    final list = _filteredAndSorted;
-    if (list.isEmpty) return const <Product>[];
+    final sorted = _sortedProducts;
+    if (sorted.isEmpty) return const [];
 
     final start = _currentPage * _pageSize;
-    final end = min(start + _pageSize, list.length);
-    if (start >= list.length) return const <Product>[];
-
-    return list.sublist(start, end);
+    final end = math.min(start + _pageSize, sorted.length);
+    if (start >= sorted.length) return const [];
+    return sorted.sublist(start, end);
   }
-
-  // ---- handlers ----
 
   void _onFilterChanged(String? value) {
     if (value == null) return;
     setState(() {
       _selectedFilter = value;
-      _currentPage = 0; // reset page when filter changes
+      _currentPage = 0;
     });
   }
 
@@ -131,6 +131,7 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
   @override
   Widget build(BuildContext context) {
     final products = _pageItems;
+    final totalProducts = _sortedProducts.length;
 
     return Scaffold(
       appBar: AppBar(
@@ -151,7 +152,7 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Heading (matches your screenshot text)
+                  // Page heading
                   Text(
                     widget.collectionTitle,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -177,6 +178,7 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
                           DropdownButton<String>(
                             key: const Key('collection_filter_dropdown'),
                             value: _selectedFilter,
+                            underline: const SizedBox.shrink(),
                             items: _filterOptions
                                 .map(
                                   (opt) => DropdownMenuItem<String>(
@@ -198,12 +200,8 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
                           DropdownButton<String>(
                             key: const Key('collection_sort_dropdown'),
                             value: _selectedSort,
-                            items: const [
-                              'Featured',
-                              'Price: Low to High',
-                              'Price: High to Low',
-                              'Alphabetical A–Z',
-                            ]
+                            underline: const SizedBox.shrink(),
+                            items: _sortOptions
                                 .map(
                                   (opt) => DropdownMenuItem<String>(
                                     value: opt,
@@ -216,7 +214,8 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
                         ],
                       );
 
-                      final countText = Text('$_totalProducts products');
+                      final countText =
+                          Text('$totalProducts products');
 
                       if (isNarrow) {
                         return Column(
@@ -231,6 +230,7 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
                         );
                       }
 
+                      // Wide layout – use Wrap to avoid overflow in tests
                       return Wrap(
                         spacing: 24,
                         runSpacing: 8,
@@ -247,7 +247,7 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
 
                   const SizedBox(height: 24),
 
-                  // PRODUCTS GRID (still using your existing card layout)
+                  // Products grid
                   GridView.builder(
                     key: const ValueKey('collection-products-grid'),
                     shrinkWrap: true,
@@ -261,40 +261,31 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
                     itemCount: products.length,
                     itemBuilder: (context, index) {
                       final product = products[index];
-                      final viewModel = CollectionProduct(
-                        name: product.name,
-                        price: '£${product.price.toStringAsFixed(2)}',
-                        imageUrl: product.mainImage,
-                      );
-                      return _ProductCard(product: viewModel);
+                      return _ProductCard(product: product);
                     },
                   ),
 
                   const SizedBox(height: 16),
 
-                  // PAGINATION
-                  if (_totalProducts > _pageSize)
-                    Center(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            key: const Key('collection_prev_page'),
-                            onPressed: _currentPage == 0
-                                ? null
-                                : _goToPreviousPage,
-                            icon: const Icon(Icons.chevron_left),
-                          ),
-                          Text('Page ${_currentPage + 1} of $_totalPages'),
-                          IconButton(
-                            key: const Key('collection_next_page'),
-                            onPressed: _currentPage >= _totalPages - 1
-                                ? null
-                                : _goToNextPage,
-                            icon: const Icon(Icons.chevron_right),
-                          ),
-                        ],
-                      ),
+                  if (_totalPages > 1)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          key: const Key('collection_prev_page'),
+                          icon: const Icon(Icons.chevron_left),
+                          onPressed:
+                              _currentPage == 0 ? null : _goToPreviousPage,
+                        ),
+                        Text('Page ${_currentPage + 1} of $_totalPages'),
+                        IconButton(
+                          key: const Key('collection_next_page'),
+                          icon: const Icon(Icons.chevron_right),
+                          onPressed: _currentPage >= _totalPages - 1
+                              ? null
+                              : _goToNextPage,
+                        ),
+                      ],
                     ),
                 ],
               ),
@@ -307,7 +298,7 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
 }
 
 class _ProductCard extends StatelessWidget {
-  final CollectionProduct product;
+  final Product product;
 
   const _ProductCard({required this.product});
 
@@ -330,9 +321,9 @@ class _ProductCard extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4),
               child: Image.network(
-                product.imageUrl,
+                product.mainImage,
                 fit: BoxFit.cover,
-                // Avoid test crashes when HTTP fails in flutter test.
+                // Avoid test crashes when HTTP 400 happens in flutter test.
                 errorBuilder: (context, error, stackTrace) {
                   return Container(color: Colors.grey.shade300);
                 },
@@ -348,7 +339,7 @@ class _ProductCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            product.price,
+            '£${product.price.toStringAsFixed(2)}',
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ],

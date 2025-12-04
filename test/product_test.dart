@@ -2,15 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 
-import 'package:union_shop/models/collection_product.dart';
+import 'package:union_shop/models/product.dart';
 import 'package:union_shop/product_page.dart';
 
 void main() {
-  const testProduct = CollectionProduct(
+  const testProduct = Product(
+    id: 'test1',
     name: 'Classic Sweatshirts',
-    price: '£23.00',
-    imageUrl:
+    description: 'Our best selling Classic Sweatshirt.',
+    price: 23.00,
+    mainImage:
         'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
+    galleryImages: [
+      'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
+      'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
+      'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
+    ],
+    colours: ['Black', 'Green', 'Purple', 'Grey'],
+    sizes: ['S', 'M', 'L', 'XL'],
+    collection: 'Hoodies & Sweatshirts',
   );
 
   testWidgets('Product page shows name, price and basic controls',
@@ -75,7 +85,7 @@ void main() {
 
       final colourText = find.text('Black').first;
       await tester.ensureVisible(colourText);
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       await tester.tap(colourText);
       await tester.pumpAndSettle();

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:union_shop/about_page.dart';
 import 'package:union_shop/collections_page.dart';
+import 'package:union_shop/data/product_data.dart';
 import 'package:union_shop/footer.dart';
-import 'package:union_shop/models/collection_product.dart';
+import 'package:union_shop/models/product.dart';
 import 'package:union_shop/product_page.dart';
 import 'package:union_shop/sale_page.dart';
 import 'package:union_shop/sign_in_page.dart';
 import 'package:union_shop/widgets/responsive_navbar.dart';
+
 
 void main() {
   runApp(const UnionShopApp());
@@ -36,33 +38,19 @@ class UnionShopApp extends StatelessWidget {
   }
 }
 
-/// Products shown on the homepage “Featured products” section.
-const List<CollectionProduct> homeFeaturedProducts = [
-  CollectionProduct(
-    name: 'Classic Sweatshirts',
-    price: '£23.00',
-    imageUrl:
-        'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
-  ),
-  CollectionProduct(
-    name: 'Essential Hoodie',
-    price: '£20.00',
-    imageUrl:
-        'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
-  ),
-  CollectionProduct(
-    name: 'Classic T-Shirts',
-    price: '£11.00',
-    imageUrl:
-        'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
-  ),
-  CollectionProduct(
-    name: 'Classic Beanie Hat',
-    price: '£12.00',
-    imageUrl:
-        'https://shop.upsu.net/cdn/shop/files/black-friday_1024x1024@2x.jpg',
-  ),
+/// Products shown on the homepage “Featured products” section,
+/// pulled directly from the shared product data model.
+final List<Product> homeFeaturedProducts = [
+  // p1 – Classic Sweatshirt - Black
+  dummyProducts.firstWhere((p) => p.id == 'p1'),
+  // p9 – Portsmouth Crest T-Shirt - White
+  dummyProducts.firstWhere((p) => p.id == 'p9'),
+  // p18 – Union Beanie
+  dummyProducts.firstWhere((p) => p.id == 'p18'),
+  // p24 – Water Bottle - Purple
+  dummyProducts.firstWhere((p) => p.id == 'p24'),
 ];
+
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -217,7 +205,7 @@ class HomeScreen extends StatelessWidget {
 }
 
 class _HomeProductCard extends StatelessWidget {
-  final CollectionProduct product;
+  final Product product;
 
   const _HomeProductCard({required this.product});
 
@@ -241,7 +229,7 @@ class _HomeProductCard extends StatelessWidget {
           children: [
             Expanded(
               child: Image.network(
-                product.imageUrl,
+                product.mainImage,
                 fit: BoxFit.cover,
                 width: double.infinity,
                 errorBuilder: (_, __, ___) =>
@@ -260,7 +248,7 @@ class _HomeProductCard extends StatelessWidget {
                     style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 4),
-                  Text(product.price),
+                  Text('£${product.price.toStringAsFixed(2)}'),
                 ],
               ),
             ),

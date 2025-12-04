@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:union_shop/footer.dart';
-import 'package:union_shop/models/collection_product.dart';
+import 'package:union_shop/models/product.dart';
 
 class ProductPage extends StatefulWidget {
-  final CollectionProduct product;
+  final Product product;
 
   const ProductPage({super.key, required this.product});
 
@@ -15,20 +15,31 @@ class _ProductPageState extends State<ProductPage> {
   late List<String> _imageUrls;
   int _selectedImageIndex = 0;
 
-  String _selectedColor = 'Black';
-  String _selectedSize = 'S';
+  String? _selectedColor;
+  String? _selectedSize;
   int _quantity = 1;
 
   @override
   void initState() {
     super.initState();
-    // For coursework, re-use the main image in the gallery.
+
+    // Build the gallery from the product model.
     _imageUrls = [
-      widget.product.imageUrl,
-      widget.product.imageUrl,
-      widget.product.imageUrl,
-      widget.product.imageUrl,
+      widget.product.mainImage,
+      ...widget.product.galleryImages,
     ];
+
+    // Make sure we have at least 4 tiles so the gallery strip looks full.
+    while (_imageUrls.length < 4) {
+      _imageUrls.add(widget.product.mainImage);
+    }
+
+    _selectedColor = widget.product.colours.isNotEmpty
+        ? widget.product.colours.first
+        : null;
+    _selectedSize = widget.product.sizes.isNotEmpty
+        ? widget.product.sizes.first
+        : null;
   }
 
   @override
@@ -75,9 +86,11 @@ class _ProductPageState extends State<ProductPage> {
               ),
               const SizedBox(height: 8),
               Text(
-                "Bringing to you our best selling ${widget.product.name}. "
-                "Available in multiple colours.\n\n"
-                "Soft, comfortable, 50% cotton and 50% polyester.",
+                widget.product.description,
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Soft, comfortable, 50% cotton and 50% polyester.',
               ),
               const SizedBox(height: 24),
               Wrap(
@@ -85,7 +98,8 @@ class _ProductPageState extends State<ProductPage> {
                 children: [
                   OutlinedButton(onPressed: () {}, child: const Text('SHARE')),
                   OutlinedButton(onPressed: () {}, child: const Text('TWEET')),
-                  OutlinedButton(onPressed: () {}, child: const Text('PIN IT')),
+                  OutlinedButton(
+                      onPressed: () {}, child: const Text('PIN IT')),
                 ],
               ),
               const SizedBox(height: 24),
@@ -116,6 +130,8 @@ class _ProductPageState extends State<ProductPage> {
             child: Image.network(
               _imageUrls[_selectedImageIndex],
               fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) =>
+                  Container(color: Colors.grey.shade300),
             ),
           ),
         ),
@@ -151,6 +167,8 @@ class _ProductPageState extends State<ProductPage> {
                       child: Image.network(
                         _imageUrls[index],
                         fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) =>
+                            Container(color: Colors.grey.shade300),
                       ),
                     ),
                   ),
@@ -164,11 +182,13 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   Widget _buildDetails(BuildContext context) {
+    final product = widget.product;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          widget.product.name,
+          product.name,
           style: const TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.bold,
@@ -176,7 +196,7 @@ class _ProductPageState extends State<ProductPage> {
         ),
         const SizedBox(height: 8),
         Text(
-          widget.product.price,
+          '£${product.price.toStringAsFixed(2)}',
           style: const TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w600,
@@ -188,31 +208,36 @@ class _ProductPageState extends State<ProductPage> {
           style: TextStyle(color: Colors.grey.shade700),
         ),
         const SizedBox(height: 24),
+
+        // Color / Size row – only show dropdowns if the product has values.
         Row(
           children: [
-            Expanded(
-              child: _buildDropdown(
-                label: 'Color',
-                value: _selectedColor,
-                options: const ['Black', 'Green', 'Purple', 'Grey'],
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() => _selectedColor = value);
-                },
+            if (product.colours.isNotEmpty && _selectedColor != null)
+              Expanded(
+                child: _buildDropdown(
+                  label: 'Color',
+                  value: _selectedColor!,
+                  options: product.colours,
+                  onChanged: (value) {
+                    if (value == null) return;
+                    setState(() => _selectedColor = value);
+                  },
+                ),
               ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildDropdown(
-                label: 'Size',
-                value: _selectedSize,
-                options: const ['S', 'M', 'L', 'XL'],
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() => _selectedSize = value);
-                },
+            if (product.colours.isNotEmpty && _selectedColor != null)
+              const SizedBox(width: 16),
+            if (product.sizes.isNotEmpty && _selectedSize != null)
+              Expanded(
+                child: _buildDropdown(
+                  label: 'Size',
+                  value: _selectedSize!,
+                  options: product.sizes,
+                  onChanged: (value) {
+                    if (value == null) return;
+                    setState(() => _selectedSize = value);
+                  },
+                ),
               ),
-            ),
           ],
         ),
         const SizedBox(height: 16),

@@ -18,8 +18,7 @@ void main() {
         findsOneWidget,
       );
 
-      // There are nav items both in the app bar and in the body nav row,
-      // so we just assert they exist (not the exact count).
+      // There are nav items in the responsive navbar
       expect(find.text('Home'), findsWidgets);
       expect(find.text('Collections'), findsWidgets);
       expect(find.text('SALE!'), findsWidgets);
@@ -40,7 +39,10 @@ void main() {
       await tester.pump();
 
       expect(find.text('Featured products'), findsOneWidget);
-      expect(find.text('Classic Sweatshirts'), findsWidgets);
+
+      // First featured product now comes from dummyProducts p1:
+      // "Classic Sweatshirt - Black"
+      expect(find.text('Classic Sweatshirt - Black'), findsWidgets);
     });
   });
 
@@ -52,7 +54,6 @@ void main() {
       // Tap the Collections item in the HEADER nav bar.
       await tester.tap(find.byKey(const ValueKey('nav_collections_desktop')));
       await tester.pumpAndSettle();
-
 
       expect(find.byType(CollectionsPage), findsOneWidget);
       // There may be multiple "Collections" labels (title, nav, etc.)
@@ -66,8 +67,8 @@ void main() {
     await mockNetworkImagesFor(() async {
       await tester.pumpWidget(const UnionShopApp());
 
-      // Ensure the featured grid is visible
-      final productText = find.text('Classic Sweatshirts').first;
+      // Ensure the featured grid is visible and tap the first featured product
+      final productText = find.text('Classic Sweatshirt - Black').first;
       await tester.ensureVisible(productText);
       await tester.pump();
 
@@ -75,7 +76,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(ProductPage), findsOneWidget);
-      expect(find.text('Classic Sweatshirts'), findsWidgets);
+      expect(find.text('Classic Sweatshirt - Black'), findsWidgets);
       expect(find.text('ADD TO CART'), findsOneWidget);
     });
   });
@@ -84,7 +85,7 @@ void main() {
       (WidgetTester tester) async {
     await tester.pumpWidget(const UnionShopApp());
 
-    // "Sign in" appears in the body nav row and in the app bar nav.
+    // "Sign in" appears in the responsive navbar.
     expect(find.text('Sign in'), findsWidgets);
     expect(find.text('The Print Shack'), findsNothing);
   });

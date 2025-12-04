@@ -56,7 +56,7 @@ Use this checklist to track which spec items you’ve implemented.
   - Collections loaded from data models or services  
   - Sorting / filtering / pagination widgets that actually work
 
-- [ ] **Dynamic Collection Page** (6%)  
+- [x] **Dynamic Collection Page** (6%)  
   - Products for a collection loaded from data models or services  
   - Working sorting / filtering / pagination
 
