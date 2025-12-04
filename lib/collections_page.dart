@@ -1,14 +1,100 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:union_shop/collection_detail_page.dart';
 import 'package:union_shop/data/product_data.dart';
 import 'package:union_shop/models/product.dart';
 
-class CollectionsPage extends StatelessWidget {
+class CollectionsPage extends StatefulWidget {
   const CollectionsPage({super.key});
 
   @override
+  State<CollectionsPage> createState() => _CollectionsPageState();
+}
+
+class _CollectionsPageState extends State<CollectionsPage> {
+  static const int _pageSize = 4;
+
+  // Filter / sort state
+  String _selectedCategory = 'All collections';
+  String _selectedSort = 'A-Z';
+  int _currentPage = 0;
+
+  late final List<CollectionTile> _allCollections;
+
+  @override
+  void initState() {
+    super.initState();
+    _allCollections = _buildCollectionTiles();
+  }
+
+  List<CollectionTile> get _filteredAndSorted {
+    Iterable<CollectionTile> items = _allCollections;
+
+    if (_selectedCategory != 'All collections') {
+      items = items.where((c) => c.category == _selectedCategory);
+    }
+
+    final list = items.toList();
+
+    list.sort((a, b) {
+      final cmp = a.title.compareTo(b.title);
+      return _selectedSort == 'A-Z' ? cmp : -cmp;
+    });
+
+    return list;
+  }
+
+  int get _totalPages {
+    final total = _filteredAndSorted.length;
+    if (total == 0) return 1;
+    return ((total - 1) / _pageSize).floor() + 1;
+  }
+
+  List<CollectionTile> get _pageItems {
+    final all = _filteredAndSorted;
+    if (all.isEmpty) return const [];
+
+    final start = _currentPage * _pageSize;
+    final end = min(start + _pageSize, all.length);
+    if (start >= all.length) return const [];
+    return all.sublist(start, end);
+  }
+
+  void _onCategoryChanged(String? newValue) {
+    if (newValue == null) return;
+    setState(() {
+      _selectedCategory = newValue;
+      _currentPage = 0; // reset page when filter changes
+    });
+  }
+
+  void _onSortChanged(String? newValue) {
+    if (newValue == null) return;
+    setState(() {
+      _selectedSort = newValue;
+    });
+  }
+
+  void _goToPreviousPage() {
+    setState(() {
+      if (_currentPage > 0) {
+        _currentPage--;
+      }
+    });
+  }
+
+  void _goToNextPage() {
+    setState(() {
+      if (_currentPage < _totalPages - 1) {
+        _currentPage++;
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final List<CollectionTile> collections = _buildCollectionTiles();
+    final totalCollections = _filteredAndSorted.length;
 
     return Scaffold(
       appBar: AppBar(
@@ -24,24 +110,179 @@ class CollectionsPage extends StatelessWidget {
                   ? 2
                   : 1;
 
-          return Padding(
-            padding: const EdgeInsets.all(16),
-            child: GridView.builder(
-              key: const ValueKey('collections-grid'),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: crossAxisCount,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: _CollectionsFilterBar(
+                  selectedCategory: _selectedCategory,
+                  selectedSort: _selectedSort,
+                  totalCollections: totalCollections,
+                  onCategoryChanged: _onCategoryChanged,
+                  onSortChanged: _onSortChanged,
+                ),
               ),
-              itemCount: collections.length,
-              itemBuilder: (context, index) {
-                final collection = collections[index];
-                return _CollectionCard(collection: collection);
-              },
-            ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: GridView.builder(
+                    key: const ValueKey('collections-grid'),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                    ),
+                    itemCount: _pageItems.length,
+                    itemBuilder: (context, index) {
+                      final collection = _pageItems[index];
+                      return _CollectionCard(collection: collection);
+                    },
+                  ),
+                ),
+              ),
+              if (_filteredAndSorted.length > _pageSize)
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        key: const ValueKey('collections_prev_page'),
+                        onPressed: _currentPage == 0 ? null : _goToPreviousPage,
+                        icon: const Icon(Icons.chevron_left),
+                      ),
+                      Text('Page ${_currentPage + 1} of $_totalPages'),
+                      IconButton(
+                        key: const ValueKey('collections_next_page'),
+                        onPressed: _currentPage >= _totalPages - 1
+                            ? null
+                            : _goToNextPage,
+                        icon: const Icon(Icons.chevron_right),
+                      ),
+                    ],
+                  ),
+                ),
+              const SizedBox(height: 8),
+            ],
           );
         },
       ),
+    );
+  }
+}
+
+/// Small filter/sort bar at the top of the Collections page.
+class _CollectionsFilterBar extends StatelessWidget {
+  final String selectedCategory;
+  final String selectedSort;
+  final int totalCollections;
+  final ValueChanged<String?> onCategoryChanged;
+  final ValueChanged<String?> onSortChanged;
+
+  const _CollectionsFilterBar({
+    required this.selectedCategory,
+    required this.selectedSort,
+    required this.totalCollections,
+    required this.onCategoryChanged,
+    required this.onSortChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    final categoryRow = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('FILTER BY', style: textTheme.bodySmall),
+        const SizedBox(width: 8),
+        DropdownButton<String>(
+          value: selectedCategory,
+          underline: const SizedBox.shrink(),
+          items: const [
+            DropdownMenuItem(
+              value: 'All collections',
+              child: Text('All collections'),
+            ),
+            DropdownMenuItem(
+              value: 'Seasonal',
+              child: Text('Seasonal'),
+            ),
+            DropdownMenuItem(
+              value: 'Sale',
+              child: Text('Sale'),
+            ),
+            DropdownMenuItem(
+              value: 'Clothing',
+              child: Text('Clothing'),
+            ),
+            DropdownMenuItem(
+              value: 'Essentials',
+              child: Text('Essentials'),
+            ),
+          ],
+          onChanged: onCategoryChanged,
+        ),
+      ],
+    );
+
+    final sortRow = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('SORT BY', style: textTheme.bodySmall),
+        const SizedBox(width: 8),
+        DropdownButton<String>(
+          value: selectedSort,
+          underline: const SizedBox.shrink(),
+          items: const [
+            DropdownMenuItem(
+              value: 'A-Z',
+              child: Text('A-Z'),
+            ),
+            DropdownMenuItem(
+              value: 'Z-A',
+              child: Text('Z-A'),
+            ),
+          ],
+          onChanged: onSortChanged,
+        ),
+      ],
+    );
+
+    final countText = Text(
+      '$totalCollections collections',
+      style: textTheme.bodySmall,
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isNarrow = constraints.maxWidth < 600;
+
+        if (isNarrow) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              categoryRow,
+              const SizedBox(height: 8),
+              sortRow,
+              const SizedBox(height: 8),
+              countText,
+            ],
+          );
+        }
+
+        return Wrap(
+          spacing: 24,
+          runSpacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            categoryRow,
+            sortRow,
+            countText,
+          ],
+        );
+      },
     );
   }
 }
@@ -52,14 +293,26 @@ class CollectionTile {
   final String imageUrl;
   final int productCount;
   final List<Product> products;
+  final String category; // Seasonal, Sale, Clothing, Essentials
 
   CollectionTile({
     required this.title,
     required this.imageUrl,
     required this.productCount,
     required this.products,
+    required this.category,
   });
 }
+
+// Map collection -> category for filtering.
+const Map<String, String> _collectionCategoryByTitle = {
+  'Autumn Favourites': 'Seasonal',
+  'Black Friday': 'Sale',
+  'Clothing': 'Clothing',
+  'Clothing - Original': 'Clothing',
+  'Elections Discounts': 'Sale',
+  'Essential Range': 'Essentials',
+};
 
 /// Build collection tiles dynamically from the shared product data model.
 ///
@@ -79,12 +332,16 @@ List<CollectionTile> _buildCollectionTiles() {
 
     final String imageUrl = products.first.mainImage;
 
+    final String category =
+        _collectionCategoryByTitle[title] ?? 'All collections';
+
     tiles.add(
       CollectionTile(
         title: title,
         imageUrl: imageUrl,
         productCount: products.length,
         products: products,
+        category: category,
       ),
     );
   });
@@ -127,7 +384,6 @@ class _CollectionCard extends StatelessWidget {
             Container(
               color: Colors.black.withOpacity(0.35),
             ),
-            // Title & product count overlay, mimicking the real UPSU layout
             Align(
               alignment: Alignment.center,
               child: Column(
