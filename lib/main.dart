@@ -23,12 +23,11 @@ class UnionShopApp extends StatelessWidget {
       home: const HomeScreen(),
       // By default, the app starts at the '/' route, which is the HomeScreen
       initialRoute: '/',
-      // When navigating to named routes, build and return the page widgets
-      routes: {
-        '/product': (context) => const ProductPage(),
-        '/about': (context) => const AboutUsPage(),
-        '/collections': (context) => const CollectionsPage(),
-      },
+      // When navigating to '/product', build and return the ProductPage
+      // In your browser, try this link: http://localhost:49856/#/product
+      routes: {'/product': (context) => const ProductPage(),
+      '/collections': (context) => const CollectionsPage(),
+      '/about': (context) => const AboutUsPage()},
     );
   }
 }
@@ -48,51 +47,59 @@ class HomeScreen extends StatelessWidget {
     // This is the event handler for buttons that don't work yet
   }
 
-  void _openMainMenu(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-      ),
-      builder: (context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.home_outlined),
-                title: const Text('Home'),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    '/',
-                    (route) => false,
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.grid_view),
-                title: const Text('Collections'),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, '/collections');
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.info_outline),
-                title: const Text('About the Union Shop'),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, '/about');
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+void _openMainMenu(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+    ),
+    builder: (context) {
+      return SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.home_outlined),
+              title: const Text('Home'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/',
+                  (route) => false,
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.shopping_bag_outlined),
+              title: const Text('Products'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/product');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.collections_bookmark_outlined),
+              title: const Text('Collections'), // <- what the test looks for
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/collections');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.info_outline),
+              title: const Text('About the Union Shop'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/about');
+              },
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
 
 
   @override

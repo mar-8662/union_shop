@@ -1,225 +1,271 @@
 import 'package:flutter/material.dart';
 
+/// Simple model for a product shown on a collection page.
 class CollectionProduct {
   final String name;
-  final String price;
+  final String price; // keep as String for easy formatting
+  final String imageUrl;
 
   const CollectionProduct({
     required this.name,
     required this.price,
+    required this.imageUrl,
   });
 }
 
-// Hard-coded dummy products for each collection title.
+/// Hard-coded products for each collection.
+/// This is perfectly fine for the coursework “dummy collection page”.
 const Map<String, List<CollectionProduct>> _dummyProductsByCollection = {
   'Autumn Favourites': [
-    CollectionProduct(name: 'Classic Sweatshirts', price: '£23.00'),
-    CollectionProduct(name: 'Classic T-Shirts', price: '£11.00'),
-    CollectionProduct(name: 'Classic Hoodies', price: '£25.00'),
-    CollectionProduct(name: 'Classic Beanie Hat', price: '£12.00'),
-    CollectionProduct(name: 'Lanyards', price: '£2.75'),
-    CollectionProduct(name: 'Keep Cups', price: '£6.50'),
+    CollectionProduct(
+      name: 'Classic Sweatshirts',
+      price: '£23.00',
+      imageUrl:
+          'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
+    ),
+    CollectionProduct(
+      name: 'Classic T-Shirts',
+      price: '£11.00',
+      imageUrl:
+          'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
+    ),
+    CollectionProduct(
+      name: 'Classic Hoodies',
+      price: '£25.00',
+      imageUrl:
+          'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
+    ),
+    CollectionProduct(
+      name: 'Classic Beanie Hat',
+      price: '£12.00',
+      imageUrl:
+          'https://shop.upsu.net/cdn/shop/files/black-friday_1024x1024@2x.jpg',
+    ),
   ],
   'Black Friday': [
-    CollectionProduct(name: 'Black Hoodie Sale', price: '£19.99'),
-    CollectionProduct(name: 'Discounted T-Shirt', price: '£7.50'),
-    CollectionProduct(name: 'Sale Beanie', price: '£5.00'),
+    CollectionProduct(
+      name: 'Discount Hoodie',
+      price: '£18.00',
+      imageUrl:
+          'https://shop.upsu.net/cdn/shop/files/black-friday_1024x1024@2x.jpg',
+    ),
+    CollectionProduct(
+      name: 'Discount T-Shirt',
+      price: '£8.50',
+      imageUrl:
+          'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
+    ),
   ],
   'Clothing': [
-    CollectionProduct(name: 'Green Sweatshirt', price: '£23.00'),
-    CollectionProduct(name: 'Purple Hoodie', price: '£25.00'),
-    CollectionProduct(name: 'Logo T-Shirt', price: '£11.00'),
+    CollectionProduct(
+      name: 'Purple Hoodie',
+      price: '£25.00',
+      imageUrl:
+          'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
+    ),
+    CollectionProduct(
+      name: 'Green Sweatshirt',
+      price: '£23.00',
+      imageUrl:
+          'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
+    ),
   ],
   'Clothing - Original': [
-    CollectionProduct(name: 'Original Hoodie', price: '£28.00'),
-    CollectionProduct(name: 'Original Sweatshirt', price: '£24.00'),
-    CollectionProduct(name: 'Original Tee', price: '£13.00'),
+    CollectionProduct(
+      name: 'Original Hoodie',
+      price: '£26.00',
+      imageUrl:
+          'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
+    ),
+    CollectionProduct(
+      name: 'Original Tee',
+      price: '£12.00',
+      imageUrl:
+          'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
+    ),
   ],
   'Elections Discounts': [
-    CollectionProduct(name: 'Campaign Hoodie', price: '£18.00'),
-    CollectionProduct(name: 'Campaign Tee', price: '£9.00'),
-    CollectionProduct(name: 'Badge Pack', price: '£3.50'),
+    CollectionProduct(
+      name: 'Campaign Hoodie',
+      price: '£19.99',
+      imageUrl:
+          'https://shop.upsu.net/cdn/shop/files/black-friday_1024x1024@2x.jpg',
+    ),
   ],
   'Essential Range': [
-    CollectionProduct(name: 'Plain Hoodie', price: '£20.00'),
-    CollectionProduct(name: 'Plain Sweatshirt', price: '£18.00'),
-    CollectionProduct(name: 'Plain Tee', price: '£8.00'),
+    CollectionProduct(
+      name: 'Essential Hoodie',
+      price: '£20.00',
+      imageUrl:
+          'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
+    ),
+    CollectionProduct(
+      name: 'Essential T-Shirt',
+      price: '£10.00',
+      imageUrl:
+          'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
+    ),
   ],
 };
 
 class CollectionDetailPage extends StatelessWidget {
   final String collectionTitle;
-  final List<CollectionProduct> products;
 
   const CollectionDetailPage({
     super.key,
     required this.collectionTitle,
-    required this.products,
   });
-
-  /// Convenience factory to build the page just from a title.
-  factory CollectionDetailPage.forTitle(String title) {
-    return CollectionDetailPage(
-      collectionTitle: title,
-      products: _dummyProductsByCollection[title] ?? const [],
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    // Look up products for this collection; fall back to empty list.
+    final products =
+        _dummyProductsByCollection[collectionTitle] ?? const <CollectionProduct>[];
 
     return Scaffold(
       appBar: AppBar(
         title: Text(collectionTitle),
+        centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 16),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final crossAxisCount = constraints.maxWidth > 1000
+              ? 3
+              : constraints.maxWidth > 650
+                  ? 2
+                  : 1;
 
-            // Title + subtitle like the example
-            Center(
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Page heading
                   Text(
                     collectionTitle,
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Shop all of this seasons must haves in one place!',
-                    style: theme.textTheme.bodyMedium,
-                    textAlign: TextAlign.center,
+                    "Shop all of this season's must haves in one place!",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Filters / sort row – simplified so it doesn’t overflow in tests.
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Wrap(
+                        spacing: 16,
+                        runSpacing: 8,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: const [
+                          Text('Filter by'),
+                          _DropdownChip(label: 'All products'),
+                          Text('Sort by'),
+                          _DropdownChip(label: 'Featured'),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Text('${products.length} products'),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Products grid
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      childAspectRatio: 3 / 4,
+                    ),
+                    itemCount: products.length,
+                    itemBuilder: (context, index) {
+                      final product = products[index];
+                      return _ProductCard(product: product);
+                    },
                   ),
                 ],
               ),
             ),
-
-            const SizedBox(height: 32),
-
-            // Filter / sort row + product count
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: const [
-                    Text('Filter by'),
-                    SizedBox(width: 8),
-                    _StaticDropdown(label: 'All products'),
-                    SizedBox(width: 24),
-                    Text('Sort by'),
-                    SizedBox(width: 8),
-                    _StaticDropdown(label: 'Featured'),
-                  ],
-                ),
-                Text(
-                  '${products.length} products',
-                  style: theme.textTheme.bodyMedium,
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 24),
-
-            // Responsive grid of products
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final crossAxisCount = constraints.maxWidth > 1000
-                    ? 3
-                    : constraints.maxWidth > 650
-                        ? 2
-                        : 1;
-
-                return GridView.builder(
-                  key: const ValueKey('collection-products-grid'),
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: products.length,
-                  gridDelegate:
-                      SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: crossAxisCount,
-                    mainAxisSpacing: 24,
-                    crossAxisSpacing: 24,
-                    childAspectRatio: 0.7,
-                  ),
-                  itemBuilder: (context, index) {
-                    final product = products[index];
-                    return _CollectionProductCard(product: product);
-                  },
-                );
-              },
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 }
 
-class _StaticDropdown extends StatelessWidget {
+class _DropdownChip extends StatelessWidget {
   final String label;
 
-  const _StaticDropdown({required this.label});
+  const _DropdownChip({required this.label});
 
   @override
   Widget build(BuildContext context) {
-    final borderColor = Colors.grey.shade400;
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: borderColor),
+        border: Border.all(color: Colors.grey.shade400),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(label),
           const SizedBox(width: 4),
-          const Icon(Icons.keyboard_arrow_down, size: 18),
+          const Icon(Icons.arrow_drop_down, size: 18),
         ],
       ),
     );
   }
 }
 
-class _CollectionProductCard extends StatelessWidget {
+class _ProductCard extends StatelessWidget {
   final CollectionProduct product;
 
-  const _CollectionProductCard({required this.product});
+  const _ProductCard({required this.product});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Column(
-      key: ValueKey('product-${product.name}'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AspectRatio(
           aspectRatio: 4 / 3,
-          child: Container(
-            // Placeholder instead of network image so tests never fetch HTTP.
-            color: Colors.grey.shade300,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: Image.network(
+              product.imageUrl,
+              fit: BoxFit.cover,
+              // Avoid test crashes when HTTP 400 happens in flutter test.
+              errorBuilder: (context, error, stackTrace) {
+                return Container(color: Colors.grey.shade300);
+              },
+            ),
           ),
         ),
         const SizedBox(height: 8),
         Text(
           product.name,
-          style: theme.textTheme.bodyMedium,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
         ),
         const SizedBox(height: 4),
         Text(
           product.price,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
     );

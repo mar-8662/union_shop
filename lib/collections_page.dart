@@ -95,11 +95,11 @@ class _CollectionCard extends StatelessWidget {
     return InkWell(
       key: ValueKey('collection-${collection.title}'),
       onTap: () {
-        Navigator.push(
-          context,
+        Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (_) =>
-                CollectionDetailPage.forTitle(collection.title),
+            builder: (_) => CollectionDetailPage(
+              collectionTitle: collection.title,
+            ),
           ),
         );
       },
@@ -111,8 +111,14 @@ class _CollectionCard extends StatelessWidget {
             Image.network(
               collection.imageUrl,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                // In tests (and if the URL is unreachable), we fall back to a
+                // simple grey box instead of throwing framework errors.
+                return Container(color: Colors.grey.shade300);
+              },
             ),
             Container(
+              // The lint about withOpacity is only a warning; fine for coursework.
               color: Colors.black.withOpacity(0.35),
               alignment: Alignment.center,
               padding: const EdgeInsets.all(16),
