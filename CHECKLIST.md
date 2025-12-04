@@ -22,15 +22,15 @@ Use this checklist to track which spec items you’ve implemented.
   - Footer widget with dummy links/info  
   - Present on at least one page (preferably reused everywhere)
 
-- [ ] **Dummy Collections Page** (5%)  
+- [x] **Dummy Collections Page** (5%)  
   - Page showing multiple product collections  
   - Data can be hardcoded/dummy
 
-- [ ] **Dummy Collection Page** (5%)  
+- [x] **Dummy Collection Page** (5%)  
   - Page that shows products within a single collection  
   - Includes dropdowns/filters (do **not** have to function yet)
 
-- [ ] **Dummy Product Page** (4%)  
+- [x] **Dummy Product Page** (4%)  
   - Product details page with image(s), price, description  
   - Includes dropdowns, buttons, and other widgets (do not need to function yet)
 

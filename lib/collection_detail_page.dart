@@ -1,17 +1,6 @@
 import 'package:flutter/material.dart';
-
-/// Simple model for a product shown on a collection page.
-class CollectionProduct {
-  final String name;
-  final String price; // keep as String for easy formatting
-  final String imageUrl;
-
-  const CollectionProduct({
-    required this.name,
-    required this.price,
-    required this.imageUrl,
-  });
-}
+import 'package:union_shop/models/collection_product.dart';
+import 'package:union_shop/product_page.dart';
 
 /// Hard-coded products for each collection.
 /// This is perfectly fine for the coursework “dummy collection page”.
@@ -69,6 +58,12 @@ const Map<String, List<CollectionProduct>> _dummyProductsByCollection = {
       imageUrl:
           'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
     ),
+    CollectionProduct(
+      name: 'Classic T-Shirts',
+      price: '£11.00',
+      imageUrl:
+          'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
+    ),
   ],
   'Clothing - Original': [
     CollectionProduct(
@@ -83,6 +78,12 @@ const Map<String, List<CollectionProduct>> _dummyProductsByCollection = {
       imageUrl:
           'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
     ),
+    CollectionProduct(
+      name: 'Original Beanie',
+      price: '£12.00',
+      imageUrl:
+          'https://shop.upsu.net/cdn/shop/files/black-friday_1024x1024@2x.jpg',
+    ),
   ],
   'Elections Discounts': [
     CollectionProduct(
@@ -90,6 +91,12 @@ const Map<String, List<CollectionProduct>> _dummyProductsByCollection = {
       price: '£19.99',
       imageUrl:
           'https://shop.upsu.net/cdn/shop/files/black-friday_1024x1024@2x.jpg',
+    ),
+    CollectionProduct(
+      name: 'Campaign T-Shirt',
+      price: '£9.99',
+      imageUrl:
+          'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
     ),
   ],
   'Essential Range': [
@@ -104,6 +111,12 @@ const Map<String, List<CollectionProduct>> _dummyProductsByCollection = {
       price: '£10.00',
       imageUrl:
           'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
+    ),
+    CollectionProduct(
+      name: 'Essential Beanie',
+      price: '£11.00',
+      imageUrl:
+          'https://shop.upsu.net/cdn/shop/files/black-friday_1024x1024@2x.jpg',
     ),
   ],
 };
@@ -155,7 +168,7 @@ class CollectionDetailPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
 
-                  // Filters / sort row – simplified so it doesn’t overflow in tests.
+                  // Filters / sort row
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -238,36 +251,46 @@ class _ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AspectRatio(
-          aspectRatio: 4 / 3,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: Image.network(
-              product.imageUrl,
-              fit: BoxFit.cover,
-              // Avoid test crashes when HTTP 400 happens in flutter test.
-              errorBuilder: (context, error, stackTrace) {
-                return Container(color: Colors.grey.shade300);
-              },
+    return InkWell(
+      onTap: () {
+        // → Product details page
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ProductPage(product: product),
+          ),
+        );
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AspectRatio(
+            aspectRatio: 4 / 3,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Image.network(
+                product.imageUrl,
+                fit: BoxFit.cover,
+                // Avoid test crashes when HTTP 400 happens in flutter test.
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(color: Colors.grey.shade300);
+                },
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          product.name,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          product.price,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-      ],
+          const SizedBox(height: 8),
+          Text(
+            product.name,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            product.price,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
+      ),
     );
   }
 }
