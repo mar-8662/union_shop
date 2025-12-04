@@ -231,18 +231,14 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
                         );
                       }
 
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      return Wrap(
+                        spacing: 24,
+                        runSpacing: 8,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        alignment: WrapAlignment.spaceBetween,
                         children: [
-                          Wrap(
-                            spacing: 24,
-                            runSpacing: 8,
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            children: [
-                              filterRow,
-                              sortRow,
-                            ],
-                          ),
+                          filterRow,
+                          sortRow,
                           countText,
                         ],
                       );
