@@ -26,8 +26,6 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
             elevation: 0,
             titleSpacing: 16,
             title: SingleChildScrollView(
-              // This prevents the Row from overflowing in tests by allowing
-              // horizontal scrolling if the content is wider than the AppBar.
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
@@ -43,35 +41,35 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
                     label: 'Home',
                     navKey: const ValueKey('nav_home_desktop'),
                     onTap: () {
-                      // Navigator.pushNamed(context, '/');
+                      Navigator.pushNamed(context, '/');
                     },
                   ),
                   _NavLink(
                     label: 'Collections',
                     navKey: const ValueKey('nav_collections_desktop'),
                     onTap: () {
-                      // Navigator.pushNamed(context, '/collections');
+                      Navigator.pushNamed(context, '/collections');
                     },
                   ),
                   _NavLink(
-                    label: 'Sale',
+                    label: 'SALE!',
                     navKey: const ValueKey('nav_sale_desktop'),
                     onTap: () {
-                      // Navigator.pushNamed(context, '/sale');
+                      Navigator.pushNamed(context, '/sale');
                     },
                   ),
                   _NavLink(
                     label: 'About',
                     navKey: const ValueKey('nav_about_desktop'),
                     onTap: () {
-                      // Navigator.pushNamed(context, '/about');
+                      Navigator.pushNamed(context, '/about');
                     },
                   ),
                   _NavLink(
                     label: 'Sign in',
                     navKey: const ValueKey('nav_signin_desktop'),
                     onTap: () {
-                      // Navigator.pushNamed(context, '/signin');
+                      Navigator.pushNamed(context, '/signin');
                     },
                   ),
                 ],
@@ -101,22 +99,27 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
                               _MobileNavItem(
                                 label: 'Home',
                                 navKey: ValueKey('nav_home_mobile'),
+                                routeName: '/',
                               ),
                               _MobileNavItem(
                                 label: 'Collections',
                                 navKey: ValueKey('nav_collections_mobile'),
+                                routeName: '/collections',
                               ),
                               _MobileNavItem(
-                                label: 'Sale',
+                                label: 'SALE!',
                                 navKey: ValueKey('nav_sale_mobile'),
+                                routeName: '/sale',
                               ),
                               _MobileNavItem(
                                 label: 'About',
                                 navKey: ValueKey('nav_about_mobile'),
+                                routeName: '/about',
                               ),
                               _MobileNavItem(
                                 label: 'Sign in',
                                 navKey: ValueKey('nav_signin_mobile'),
+                                routeName: '/signin',
                               ),
                             ],
                           ),
@@ -167,9 +170,11 @@ class _NavLink extends StatelessWidget {
 class _MobileNavItem extends StatelessWidget {
   final String label;
   final Key? navKey;
+  final String routeName;
 
   const _MobileNavItem({
     required this.label,
+    required this.routeName,
     this.navKey,
   });
 
@@ -178,9 +183,9 @@ class _MobileNavItem extends StatelessWidget {
     return ListTile(
       key: navKey,
       title: Text(label),
-      // For the coursework, these do not need to navigate.
       onTap: () {
-        Navigator.pop(context); // just close the sheet
+        Navigator.pop(context); // close the sheet
+        Navigator.pushNamed(context, routeName);
       },
     );
   }

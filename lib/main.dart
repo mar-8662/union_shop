@@ -8,7 +8,6 @@ import 'package:union_shop/sale_page.dart';
 import 'package:union_shop/sign_in_page.dart';
 import 'package:union_shop/widgets/responsive_navbar.dart';
 
-
 void main() {
   runApp(const UnionShopApp());
 }
@@ -24,11 +23,13 @@ class UnionShopApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4d2963)),
       ),
-      home: const HomeScreen(),
+      // Use '/' as the initial route instead of `home`.
+      initialRoute: '/',
       routes: {
+        '/': (context) => const HomeScreen(),
         '/collections': (context) => const CollectionsPage(),
         '/about': (context) => const AboutUsPage(),
-        '/sale': (context) => const SalePage(), 
+        '/sale': (context) => const SalePage(),
         '/signin': (context) => const SignInPage(),
       },
     );
@@ -87,60 +88,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
 
-          // Nav row (scrollable horizontally to avoid overflow in tests)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  const Text(
-                    'The UNION',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(width: 24),
-                  TextButton(
-                    key: const ValueKey('body_nav_home'),
-                    onPressed: () {},
-                    child: const Text('Home'),
-                  ),
-                  TextButton(
-                    key: const ValueKey('body_nav_collections'),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/collections');
-                    },
-                    child: const Text('Collections'),
-                  ),
-                  TextButton(
-                    key: const ValueKey('body_nav_sale'),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/sale');
-                    },
-                    child: const Text('SALE!'),
-                  ),
-                  TextButton(
-                    key: const ValueKey('body_nav_about'),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/about');
-                    },
-                    child: const Text('About'),
-                  ),
-                  TextButton(
-                    key: const ValueKey('body_nav_signin'),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/signin');
-                    },
-                    child: const Text('Sign in'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-
           // Scrollable page content
           Expanded(
             child: SingleChildScrollView(
@@ -196,7 +143,9 @@ class HomeScreen extends StatelessWidget {
                                   },
                                   style: ElevatedButton.styleFrom(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 24, vertical: 12),
+                                      horizontal: 24,
+                                      vertical: 12,
+                                    ),
                                   ),
                                   child: const Text('BROWSE COLLECTION'),
                                 ),

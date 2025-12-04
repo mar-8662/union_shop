@@ -38,12 +38,12 @@ Use this checklist to track which spec items you’ve implemented.
   - Page listing “sale” products  
   - Shows discounted prices and basic promo messaging
 
-- [ ] **Authentication UI** (3%)  
+- [x] **Authentication UI** (3%)  
   - Login (sign-in) page with email/password fields etc.  
   - Signup (register) page with relevant form fields  
   - Forms do **not** have to talk to real auth yet
 
-- [ ] **Static Navbar** (5%)  
+- [x] **Static Navbar** (5%)  
   - Top navigation bar in desktop view  
   - Links/buttons can be non-functional, but layout must be present  
   - Collapses to a **menu button** in mobile view

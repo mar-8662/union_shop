@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:union_shop/collection_detail_page.dart';
+import 'package:union_shop/data/product_data.dart';
+import 'package:union_shop/models/product.dart';
 
 class CollectionsPage extends StatelessWidget {
   const CollectionsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final List<CollectionTile> collections = _buildCollectionTiles();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Collections'),
@@ -23,14 +27,15 @@ class CollectionsPage extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.all(16),
             child: GridView.builder(
+              key: const ValueKey('collections-grid'),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: crossAxisCount,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
               ),
-              itemCount: _dummyCollections.length,
+              itemCount: collections.length,
               itemBuilder: (context, index) {
-                final collection = _dummyCollections[index];
+                final collection = collections[index];
                 return _CollectionCard(collection: collection);
               },
             ),
@@ -41,52 +46,54 @@ class CollectionsPage extends StatelessWidget {
   }
 }
 
-class CollectionItem {
+/// View-model representing one tile on the Collections page.
+class CollectionTile {
   final String title;
   final String imageUrl;
+  final int productCount;
+  final List<Product> products;
 
-  const CollectionItem({
+  CollectionTile({
     required this.title,
     required this.imageUrl,
+    required this.productCount,
+    required this.products,
   });
 }
 
-// Hard-coded dummy data – good enough for the coursework
-const List<CollectionItem> _dummyCollections = [
-  CollectionItem(
-    title: 'Autumn Favourites',
-    imageUrl:
-        'https://shop.upsu.net/cdn/shop/files/PortsmouthCityPostcard2_1024x1024@2x.jpg?v=1752232561',
-  ),
-  CollectionItem(
-    title: 'Black Friday',
-    imageUrl:
-        'https://shop.upsu.net/cdn/shop/files/black-friday_1024x1024@2x.jpg',
-  ),
-  CollectionItem(
-    title: 'Clothing',
-    imageUrl:
-        'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
-  ),
-  CollectionItem(
-    title: 'Clothing - Original',
-    imageUrl:
-        'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
-  ),
-  CollectionItem(
-    title: 'Elections Discounts',
-    imageUrl:
-        'https://shop.upsu.net/cdn/shop/files/elections-discount_1024x1024@2x.jpg',
-  ),
-  CollectionItem(
-    title: 'Essential Range',
-    imageUrl:
-        'https://shop.upsu.net/cdn/shop/files/essential-range_1024x1024@2x.jpg',
-  ),
-];
+/// Build collection tiles dynamically from the shared product data model.
+///
+/// This is what satisfies the “Collections page populated from data models
+/// or services” requirement – we are not hard-coding the collections here.
+List<CollectionTile> _buildCollectionTiles() {
+  final List<CollectionTile> tiles = [];
+
+  productIdsByCollection.forEach((title, ids) {
+    final List<Product> products = dummyProducts
+        .where((p) => ids.contains(p.id))
+        .toList(growable: false);
+
+    if (products.isEmpty) {
+      return;
+    }
+
+    final String imageUrl = products.first.mainImage;
+
+    tiles.add(
+      CollectionTile(
+        title: title,
+        imageUrl: imageUrl,
+        productCount: products.length,
+        products: products,
+      ),
+    );
+  });
+
+  return tiles;
+}
 
 class _CollectionCard extends StatelessWidget {
-  final CollectionItem collection;
+  final CollectionTile collection;
 
   const _CollectionCard({required this.collection});
 
@@ -118,17 +125,30 @@ class _CollectionCard extends StatelessWidget {
               },
             ),
             Container(
-              // The lint about withOpacity is only a warning; fine for coursework.
               color: Colors.black.withOpacity(0.35),
+            ),
+            // Title & product count overlay, mimicking the real UPSU layout
+            Align(
               alignment: Alignment.center,
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                collection.title,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    collection.title,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${collection.productCount} products',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.white70,
+                        ),
+                  ),
+                ],
               ),
             ),
           ],

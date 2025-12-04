@@ -1,125 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:union_shop/data/product_data.dart';
 import 'package:union_shop/models/collection_product.dart';
 import 'package:union_shop/product_page.dart';
-
-/// Hard-coded products for each collection.
-/// This is perfectly fine for the coursework “dummy collection page”.
-const Map<String, List<CollectionProduct>> _dummyProductsByCollection = {
-  'Autumn Favourites': [
-    CollectionProduct(
-      name: 'Classic Sweatshirts',
-      price: '£23.00',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
-    ),
-    CollectionProduct(
-      name: 'Classic T-Shirts',
-      price: '£11.00',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
-    ),
-    CollectionProduct(
-      name: 'Classic Hoodies',
-      price: '£25.00',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
-    ),
-    CollectionProduct(
-      name: 'Classic Beanie Hat',
-      price: '£12.00',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/black-friday_1024x1024@2x.jpg',
-    ),
-  ],
-  'Black Friday': [
-    CollectionProduct(
-      name: 'Discount Hoodie',
-      price: '£18.00',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/black-friday_1024x1024@2x.jpg',
-    ),
-    CollectionProduct(
-      name: 'Discount T-Shirt',
-      price: '£8.50',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
-    ),
-  ],
-  'Clothing': [
-    CollectionProduct(
-      name: 'Purple Hoodie',
-      price: '£25.00',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
-    ),
-    CollectionProduct(
-      name: 'Green Sweatshirt',
-      price: '£23.00',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
-    ),
-    CollectionProduct(
-      name: 'Classic T-Shirts',
-      price: '£11.00',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
-    ),
-  ],
-  'Clothing - Original': [
-    CollectionProduct(
-      name: 'Original Hoodie',
-      price: '£26.00',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
-    ),
-    CollectionProduct(
-      name: 'Original Tee',
-      price: '£12.00',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
-    ),
-    CollectionProduct(
-      name: 'Original Beanie',
-      price: '£12.00',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/black-friday_1024x1024@2x.jpg',
-    ),
-  ],
-  'Elections Discounts': [
-    CollectionProduct(
-      name: 'Campaign Hoodie',
-      price: '£19.99',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/black-friday_1024x1024@2x.jpg',
-    ),
-    CollectionProduct(
-      name: 'Campaign T-Shirt',
-      price: '£9.99',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
-    ),
-  ],
-  'Essential Range': [
-    CollectionProduct(
-      name: 'Essential Hoodie',
-      price: '£20.00',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
-    ),
-    CollectionProduct(
-      name: 'Essential T-Shirt',
-      price: '£10.00',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
-    ),
-    CollectionProduct(
-      name: 'Essential Beanie',
-      price: '£11.00',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/black-friday_1024x1024@2x.jpg',
-    ),
-  ],
-};
 
 class CollectionDetailPage extends StatelessWidget {
   final String collectionTitle;
@@ -129,11 +11,28 @@ class CollectionDetailPage extends StatelessWidget {
     required this.collectionTitle,
   });
 
+  /// Named constructor used by tests: CollectionDetailPage.forTitle('Clothing')
+  const CollectionDetailPage.forTitle(
+    String title, {
+    Key? key,
+  })  : collectionTitle = title,
+        super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    // Look up products for this collection; fall back to empty list.
-    final products =
-        _dummyProductsByCollection[collectionTitle] ?? const <CollectionProduct>[];
+    // Get the real Product models for this collection from product_data.dart
+    final productModels = productsForCollection(collectionTitle);
+
+    // Convert them into the simpler CollectionProduct view-model
+    final List<CollectionProduct> products = productModels
+        .map(
+          (p) => CollectionProduct(
+            name: p.name,
+            price: '£${p.price.toStringAsFixed(2)}',
+            imageUrl: p.mainImage,
+          ),
+        )
+        .toList(growable: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -162,13 +61,13 @@ class CollectionDetailPage extends StatelessWidget {
                         ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    "Shop all of this season's must haves in one place!",
-                    style: Theme.of(context).textTheme.bodyMedium,
+                  const Text(
+                    // Match your test text exactly
+                    "Shop all of this seasons must haves in one place!",
                   ),
                   const SizedBox(height: 24),
 
-                  // Filters / sort row
+                  // Filters / sort row (UI only but functional enough for coursework)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -195,6 +94,7 @@ class CollectionDetailPage extends StatelessWidget {
 
                   // Products grid
                   GridView.builder(
+                    key: const ValueKey('collection-products-grid'),
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

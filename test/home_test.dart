@@ -49,10 +49,10 @@ void main() {
     await mockNetworkImagesFor(() async {
       await tester.pumpWidget(const UnionShopApp());
 
-      // Tap the Collections item in the BODY nav row,
-      // which is the one that actually navigates.
-      await tester.tap(find.byKey(const ValueKey('body_nav_collections')));
+      // Tap the Collections item in the HEADER nav bar.
+      await tester.tap(find.byKey(const ValueKey('nav_collections_desktop')));
       await tester.pumpAndSettle();
+
 
       expect(find.byType(CollectionsPage), findsOneWidget);
       // There may be multiple "Collections" labels (title, nav, etc.)
