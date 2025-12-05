@@ -66,7 +66,7 @@ Use this checklist to track which spec items you’ve implemented.
   - Working counters (quantity selector)  
   - Add to cart button **does not** have to modify a real cart yet
 
-- [ ] **Shopping Cart** (6%)  
+- [x] **Shopping Cart** (6%)  
   - Add items to cart from product pages  
   - View a cart page with list of items  
   - Basic cart behaviour (e.g. show totals, simple checkout button)  

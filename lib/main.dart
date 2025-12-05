@@ -9,6 +9,8 @@ import 'package:union_shop/sale_page.dart';
 import 'package:union_shop/sign_in_page.dart';
 import 'package:union_shop/widgets/responsive_navbar.dart';
 import 'package:union_shop/cart_page.dart';
+import 'package:union_shop/personalisation_page.dart';
+import 'package:union_shop/print_shack_about_page.dart';
 
 void main() {
   runApp(const UnionShopApp());
@@ -32,6 +34,8 @@ class UnionShopApp extends StatelessWidget {
         '/sale': (context) => const SalePage(),
         '/signin': (context) => const SignInPage(),
         '/cart': (context) => const CartPage(),
+        '/personalisation': (context) => const PersonalisationPage(),
+        '/printshack': (context) => const PrintShackAboutPage(),
       },
     );
   }
@@ -172,8 +176,7 @@ class HomeScreen extends StatelessWidget {
                                 childAspectRatio: 0.7,
                               ),
                               itemBuilder: (context, index) {
-                                final product =
-                                    homeFeaturedProducts[index];
+                                final product = homeFeaturedProducts[index];
                                 return _HomeProductCard(product: product);
                               },
                             );

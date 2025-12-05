@@ -20,13 +20,16 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const ValueKey('nav_home_desktop')), findsOneWidget);
-      expect(
-          find.byKey(const ValueKey('nav_collections_desktop')),
+      expect(find.byKey(const ValueKey('nav_collections_desktop')),
           findsOneWidget);
       expect(find.byKey(const ValueKey('nav_sale_desktop')), findsOneWidget);
       expect(find.byKey(const ValueKey('nav_about_desktop')), findsOneWidget);
       expect(find.byKey(const ValueKey('nav_signin_desktop')), findsOneWidget);
       expect(find.byKey(const ValueKey('nav_cart_desktop')), findsOneWidget);
+
+      // New Print Shack dropdown
+      expect(find.byKey(const ValueKey('nav_printshack_desktop')),
+          findsOneWidget);
 
       // On desktop we should not see the mobile menu icon
       expect(find.byIcon(Icons.menu), findsNothing);
@@ -66,14 +69,19 @@ void main() {
       expect(find.byKey(const ValueKey('nav_home_mobile')), findsOneWidget);
       expect(find.byKey(const ValueKey('nav_collections_mobile')),
           findsOneWidget);
+      expect(find.byKey(const ValueKey('nav_sale_mobile')), findsOneWidget);
+      expect(find.byKey(const ValueKey('nav_about_mobile')), findsOneWidget);
+      expect(find.byKey(const ValueKey('nav_signin_mobile')), findsOneWidget);
+      expect(find.byKey(const ValueKey('nav_cart_mobile')), findsOneWidget);
+
+      // New Print Shack entries
       expect(
-          find.byKey(const ValueKey('nav_sale_mobile')), findsOneWidget);
+          find.byKey(
+              const ValueKey('nav_printshack_personalisation_mobile')),
+          findsOneWidget);
       expect(
-          find.byKey(const ValueKey('nav_about_mobile')), findsOneWidget);
-      expect(
-          find.byKey(const ValueKey('nav_signin_mobile')), findsOneWidget);
-      expect(
-          find.byKey(const ValueKey('nav_cart_mobile')), findsOneWidget);
+          find.byKey(const ValueKey('nav_printshack_about_mobile')),
+          findsOneWidget);
     });
   });
 }

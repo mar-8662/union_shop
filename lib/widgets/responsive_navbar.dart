@@ -51,6 +51,10 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
                       Navigator.pushNamed(context, '/collections');
                     },
                   ),
+
+                  // NEW: The Print Shack dropdown
+                  const _PrintShackMenu(),
+
                   _NavLink(
                     label: 'SALE!',
                     navKey: const ValueKey('nav_sale_desktop'),
@@ -112,6 +116,18 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
                                 label: 'Collections',
                                 navKey: ValueKey('nav_collections_mobile'),
                                 routeName: '/collections',
+                              ),
+                              _MobileNavItem(
+                                label: 'Print Shack – Personalisation',
+                                navKey: ValueKey(
+                                    'nav_printshack_personalisation_mobile'),
+                                routeName: '/personalisation',
+                              ),
+                              _MobileNavItem(
+                                label: 'Print Shack – About',
+                                navKey:
+                                    ValueKey('nav_printshack_about_mobile'),
+                                routeName: '/printshack',
                               ),
                               _MobileNavItem(
                                 label: 'SALE!',
@@ -178,6 +194,60 @@ class _NavLink extends StatelessWidget {
     );
   }
 }
+
+class _PrintShackMenu extends StatelessWidget {
+  const _PrintShackMenu();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: PopupMenuButton<_PrintShackDestination>(
+        key: const ValueKey('nav_printshack_desktop'),
+        offset: const Offset(0, 32),
+        onSelected: (destination) {
+          switch (destination) {
+            case _PrintShackDestination.personalisation:
+              Navigator.pushNamed(context, '/personalisation');
+              break;
+            case _PrintShackDestination.about:
+              Navigator.pushNamed(context, '/printshack');
+              break;
+          }
+        },
+        itemBuilder: (context) => const [
+          PopupMenuItem<_PrintShackDestination>(
+            key: ValueKey('nav_printshack_personalisation_desktop'),
+            value: _PrintShackDestination.personalisation,
+            child: Text('Personalisation'),
+          ),
+          PopupMenuItem<_PrintShackDestination>(
+            key: ValueKey('nav_printshack_about_desktop'),
+            value: _PrintShackDestination.about,
+            child: Text('About Print Shack'),
+          ),
+        ],
+        child: Row(
+          children: const [
+            Text(
+              'The Print Shack',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
+            ),
+            Icon(
+              Icons.arrow_drop_down,
+              color: Colors.white,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+enum _PrintShackDestination { personalisation, about }
 
 class _MobileNavItem extends StatelessWidget {
   final String label;

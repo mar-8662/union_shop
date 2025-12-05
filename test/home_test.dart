@@ -5,6 +5,7 @@ import 'package:network_image_mock/network_image_mock.dart';
 import 'package:union_shop/main.dart';
 import 'package:union_shop/collections_page.dart';
 import 'package:union_shop/product_page.dart';
+import 'package:union_shop/personalisation_page.dart';
 
 void main() {
   testWidgets('Home shows banner, nav, hero and featured products',
@@ -23,6 +24,7 @@ void main() {
       expect(find.text('Collections'), findsWidgets);
       expect(find.text('SALE!'), findsWidgets);
       expect(find.text('About'), findsWidgets);
+      expect(find.text('The Print Shack'), findsWidgets);
 
       // Hero section
       expect(
@@ -81,12 +83,30 @@ void main() {
     });
   });
 
-  testWidgets('Home page has Sign in nav and no Print Shack',
+  testWidgets('Home page has Sign in nav and Print Shack menu',
       (WidgetTester tester) async {
     await tester.pumpWidget(const UnionShopApp());
 
     // "Sign in" appears in the responsive navbar.
     expect(find.text('Sign in'), findsWidgets);
-    expect(find.text('The Print Shack'), findsNothing);
+    expect(find.text('The Print Shack'), findsWidgets);
+  });
+
+  testWidgets('Clicking Print Shack → Personalisation navigates correctly',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const UnionShopApp());
+
+    // Open dropdown
+    await tester.tap(
+        find.byKey(const ValueKey('nav_printshack_desktop')));
+    await tester.pumpAndSettle();
+
+    // Tap "Personalisation"
+    await tester.tap(find.byKey(
+        const ValueKey('nav_printshack_personalisation_desktop')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(PersonalisationPage), findsOneWidget);
+    expect(find.text('Personalisation'), findsOneWidget);
   });
 }

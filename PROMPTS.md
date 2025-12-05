@@ -22,19 +22,14 @@
 
 > create a checklist of all of the features listed in the specification that i can put in a checklist file in the repo
 
+**Prompt 5:**
 
+Give me a suggestion of what to use as a commit message for [insert code]
 
+**Prompt 6:**
 
-
-
-
-
+What is the best way of including images for this coursework
 
 **Prompt:**
 
 > write down prompts that i gave you for this coursework and create a prompts file in my repo so i can clearly show my ai use
-
-**How I used it:**
-
-- Produced this `AI_PROMPTS.md` file summarising my interactions with ChatGPT for the coursework.
-- This is included in the repo to be transparent about my AI use.
