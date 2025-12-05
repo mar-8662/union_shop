@@ -8,7 +8,7 @@ import 'package:union_shop/product_page.dart';
 import 'package:union_shop/sale_page.dart';
 import 'package:union_shop/sign_in_page.dart';
 import 'package:union_shop/widgets/responsive_navbar.dart';
-
+import 'package:union_shop/cart_page.dart';
 
 void main() {
   runApp(const UnionShopApp());
@@ -25,32 +25,25 @@ class UnionShopApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4d2963)),
       ),
-      // Use '/' as the initial route instead of `home`.
-      initialRoute: '/',
+      home: const HomeScreen(),
       routes: {
-        '/': (context) => const HomeScreen(),
         '/collections': (context) => const CollectionsPage(),
         '/about': (context) => const AboutUsPage(),
         '/sale': (context) => const SalePage(),
         '/signin': (context) => const SignInPage(),
+        '/cart': (context) => const CartPage(),
       },
     );
   }
 }
 
-/// Products shown on the homepage “Featured products” section,
-/// pulled directly from the shared product data model.
+/// Featured products on home page, using real product data.
 final List<Product> homeFeaturedProducts = [
-  // p1 – Classic Sweatshirt - Black
-  dummyProducts.firstWhere((p) => p.id == 'p1'),
-  // p9 – Portsmouth Crest T-Shirt - White
-  dummyProducts.firstWhere((p) => p.id == 'p9'),
-  // p18 – Union Beanie
-  dummyProducts.firstWhere((p) => p.id == 'p18'),
-  // p24 – Water Bottle - Purple
-  dummyProducts.firstWhere((p) => p.id == 'p24'),
+  dummyProducts[0],
+  dummyProducts[4],
+  dummyProducts[8],
+  dummyProducts[17],
 ];
-
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -63,7 +56,6 @@ class HomeScreen extends StatelessWidget {
       appBar: const ResponsiveNavbar(),
       body: Column(
         children: [
-          // Top sale banner
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
@@ -71,17 +63,17 @@ class HomeScreen extends StatelessWidget {
             child: const Text(
               'BIG SALE! OUR ESSENTIAL RANGE HAS DROPPED IN PRICE! OVER 20% OFF! '
               'COME GRAB YOURS WHILE STOCK LASTS!',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
               textAlign: TextAlign.center,
             ),
           ),
-
-          // Scrollable page content
           Expanded(
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // Hero banner
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: AspectRatio(
@@ -96,7 +88,7 @@ class HomeScreen extends StatelessWidget {
                                 Container(color: Colors.grey.shade300),
                           ),
                           Container(
-                            color: Colors.black.withOpacity(0.35),
+                            color: Colors.black.withValues(alpha: 0.35),
                           ),
                           Center(
                             child: Column(
@@ -144,10 +136,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 32),
-
-                  // Featured products
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
@@ -164,11 +153,12 @@ class HomeScreen extends StatelessWidget {
                         const SizedBox(height: 16),
                         LayoutBuilder(
                           builder: (context, constraints) {
-                            final crossAxisCount = constraints.maxWidth > 1000
-                                ? 4
-                                : constraints.maxWidth > 650
-                                    ? 3
-                                    : 2;
+                            final crossAxisCount =
+                                constraints.maxWidth > 1000
+                                    ? 4
+                                    : constraints.maxWidth > 650
+                                        ? 3
+                                        : 2;
 
                             return GridView.builder(
                               shrinkWrap: true,
@@ -182,7 +172,8 @@ class HomeScreen extends StatelessWidget {
                                 childAspectRatio: 0.7,
                               ),
                               itemBuilder: (context, index) {
-                                final product = homeFeaturedProducts[index];
+                                final product =
+                                    homeFeaturedProducts[index];
                                 return _HomeProductCard(product: product);
                               },
                             );
@@ -191,7 +182,6 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-
                   const SizedBox(height: 32),
                   const UnionFooter(),
                 ],

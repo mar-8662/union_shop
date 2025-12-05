@@ -6,28 +6,28 @@ import 'package:union_shop/models/product.dart';
 import 'package:union_shop/product_page.dart';
 
 void main() {
-  const testProduct = Product(
+  final Product testProduct = Product(
     id: 'test1',
     name: 'Classic Sweatshirts',
-    description: 'Our best selling Classic Sweatshirt.',
+    description:
+        'Bringing to you our best selling Classic Sweatshirts. Available in multiple colours.',
     price: 23.00,
     mainImage:
-        'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
-    galleryImages: [
-      'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
-      'https://shop.upsu.net/cdn/shop/files/hoodie-purple_1024x1024@2x.jpg',
-      'https://shop.upsu.net/cdn/shop/files/hoodie-original_1024x1024@2x.jpg',
+        'https://example.com/test-image-1.jpg',
+    galleryImages: const [
+      'https://example.com/test-image-1.jpg',
+      'https://example.com/test-image-2.jpg',
     ],
-    colours: ['Black', 'Green', 'Purple', 'Grey'],
-    sizes: ['S', 'M', 'L', 'XL'],
-    collection: 'Hoodies & Sweatshirts',
+    colours: const ['Black', 'Green', 'Purple', 'Grey'],
+    sizes: const ['S', 'M', 'L', 'XL'],
+    collection: 'Test Collection',
   );
 
   testWidgets('Product page shows name, price and basic controls',
       (WidgetTester tester) async {
     await mockNetworkImagesFor(() async {
       await tester.pumpWidget(
-        const MaterialApp(
+        MaterialApp(
           home: ProductPage(product: testProduct),
         ),
       );
@@ -54,7 +54,7 @@ void main() {
       (WidgetTester tester) async {
     await mockNetworkImagesFor(() async {
       await tester.pumpWidget(
-        const MaterialApp(
+        MaterialApp(
           home: ProductPage(product: testProduct),
         ),
       );
@@ -78,14 +78,14 @@ void main() {
       (WidgetTester tester) async {
     await mockNetworkImagesFor(() async {
       await tester.pumpWidget(
-        const MaterialApp(
+        MaterialApp(
           home: ProductPage(product: testProduct),
         ),
       );
 
       final colourText = find.text('Black').first;
       await tester.ensureVisible(colourText);
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       await tester.tap(colourText);
       await tester.pumpAndSettle();

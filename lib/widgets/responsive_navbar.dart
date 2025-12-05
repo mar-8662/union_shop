@@ -72,6 +72,13 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
                       Navigator.pushNamed(context, '/signin');
                     },
                   ),
+                  _NavLink(
+                    label: 'Cart',
+                    navKey: const ValueKey('nav_cart_desktop'),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/cart');
+                    },
+                  ),
                 ],
               ),
             ),
@@ -120,6 +127,11 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
                                 label: 'Sign in',
                                 navKey: ValueKey('nav_signin_mobile'),
                                 routeName: '/signin',
+                              ),
+                              _MobileNavItem(
+                                label: 'Cart',
+                                navKey: ValueKey('nav_cart_mobile'),
+                                routeName: '/cart',
                               ),
                             ],
                           ),

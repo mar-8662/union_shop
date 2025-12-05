@@ -20,10 +20,13 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const ValueKey('nav_home_desktop')), findsOneWidget);
-      expect(find.byKey(const ValueKey('nav_collections_desktop')), findsOneWidget);
+      expect(
+          find.byKey(const ValueKey('nav_collections_desktop')),
+          findsOneWidget);
       expect(find.byKey(const ValueKey('nav_sale_desktop')), findsOneWidget);
       expect(find.byKey(const ValueKey('nav_about_desktop')), findsOneWidget);
       expect(find.byKey(const ValueKey('nav_signin_desktop')), findsOneWidget);
+      expect(find.byKey(const ValueKey('nav_cart_desktop')), findsOneWidget);
 
       // On desktop we should not see the mobile menu icon
       expect(find.byIcon(Icons.menu), findsNothing);
@@ -47,8 +50,10 @@ void main() {
       // On mobile we see the menu icon instead of the desktop links
       expect(find.byIcon(Icons.menu), findsOneWidget);
       expect(find.byKey(const ValueKey('nav_home_desktop')), findsNothing);
-      expect(find.byKey(const ValueKey('nav_collections_desktop')), findsNothing);
+      expect(find.byKey(const ValueKey('nav_collections_desktop')),
+          findsNothing);
       expect(find.byKey(const ValueKey('nav_signin_desktop')), findsNothing);
+      expect(find.byKey(const ValueKey('nav_cart_desktop')), findsNothing);
 
       // The mobile nav items should not be visible before opening the sheet
       expect(find.byKey(const ValueKey('nav_home_mobile')), findsNothing);
@@ -59,10 +64,16 @@ void main() {
 
       // Now the mobile nav items are visible
       expect(find.byKey(const ValueKey('nav_home_mobile')), findsOneWidget);
-      expect(find.byKey(const ValueKey('nav_collections_mobile')), findsOneWidget);
-      expect(find.byKey(const ValueKey('nav_sale_mobile')), findsOneWidget);
-      expect(find.byKey(const ValueKey('nav_about_mobile')), findsOneWidget);
-      expect(find.byKey(const ValueKey('nav_signin_mobile')), findsOneWidget);
+      expect(find.byKey(const ValueKey('nav_collections_mobile')),
+          findsOneWidget);
+      expect(
+          find.byKey(const ValueKey('nav_sale_mobile')), findsOneWidget);
+      expect(
+          find.byKey(const ValueKey('nav_about_mobile')), findsOneWidget);
+      expect(
+          find.byKey(const ValueKey('nav_signin_mobile')), findsOneWidget);
+      expect(
+          find.byKey(const ValueKey('nav_cart_mobile')), findsOneWidget);
     });
   });
 }

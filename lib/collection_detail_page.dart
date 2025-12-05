@@ -1,9 +1,11 @@
-import 'dart:math' as math;
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:union_shop/data/product_data.dart';
 import 'package:union_shop/models/product.dart';
 import 'package:union_shop/product_page.dart';
+import 'package:union_shop/widgets/responsive_navbar.dart';
+
 
 class CollectionDetailPage extends StatefulWidget {
   final String collectionTitle;
@@ -25,119 +27,58 @@ class CollectionDetailPage extends StatefulWidget {
 }
 
 class _CollectionDetailPageState extends State<CollectionDetailPage> {
-  static const int _pageSize = 8;
-
-  late final List<Product> _allProducts;
+  static const int _pageSize = 9;
 
   String _selectedFilter = 'All products';
   String _selectedSort = 'Featured';
   int _currentPage = 0;
 
-  static const List<String> _filterOptions = [
-    'All products',
-    'Hoodies & Sweatshirts',
-    'T-Shirts',
-    'Outerwear',
-    'Accessories',
-    'Print Shack',
-  ];
-
-  static const List<String> _sortOptions = [
-    'Featured',
-    'Price: Low to High',
-    'Price: High to Low',
-    'Alphabetical A–Z',
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _allProducts = productsForCollection(widget.collectionTitle);
-  }
-
-  List<Product> get _filteredProducts {
-    if (_selectedFilter == 'All products') return _allProducts;
-
-    return _allProducts
-        .where((p) => p.collection == _selectedFilter)
-        .toList(growable: false);
-  }
-
-  List<Product> get _sortedProducts {
-    final products = List<Product>.from(_filteredProducts);
-
-    switch (_selectedSort) {
-      case 'Price: Low to High':
-        products.sort((a, b) => a.price.compareTo(b.price));
-        break;
-      case 'Price: High to Low':
-        products.sort((a, b) => b.price.compareTo(a.price));
-        break;
-      case 'Alphabetical A–Z':
-        products.sort((a, b) => a.name.compareTo(b.name));
-        break;
-      case 'Featured':
-      default:
-        // Keep original order (as from data model).
-        break;
-    }
-
-    return products;
-  }
-
-  int get _totalPages {
-    final total = _sortedProducts.length;
-    if (total == 0) return 1;
-    return ((total - 1) / _pageSize).floor() + 1;
-  }
-
-  List<Product> get _pageItems {
-    final sorted = _sortedProducts;
-    if (sorted.isEmpty) return const [];
-
-    final start = _currentPage * _pageSize;
-    final end = math.min(start + _pageSize, sorted.length);
-    if (start >= sorted.length) return const [];
-    return sorted.sublist(start, end);
-  }
-
-  void _onFilterChanged(String? value) {
-    if (value == null) return;
-    setState(() {
-      _selectedFilter = value;
-      _currentPage = 0;
-    });
-  }
-
-  void _onSortChanged(String? value) {
-    if (value == null) return;
-    setState(() {
-      _selectedSort = value;
-    });
-  }
-
-  void _goToPreviousPage() {
-    setState(() {
-      if (_currentPage > 0) _currentPage--;
-    });
-  }
-
-  void _goToNextPage() {
-    setState(() {
-      if (_currentPage < _totalPages - 1) _currentPage++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final products = _pageItems;
-    final totalProducts = _sortedProducts.length;
+    // Get the real Product models for this collection from product_data.dart
+    final List<Product> allProducts =
+        productsForCollection(widget.collectionTitle);
+
+    // 1) Apply filter
+    Iterable<Product> filtered = allProducts;
+    if (_selectedFilter == 'Hoodies & Sweatshirts') {
+      filtered = filtered.where((p) =>
+          p.name.contains('Hoodie') || p.name.contains('Sweatshirt'));
+    } else if (_selectedFilter == 'Accessories') {
+      filtered = filtered.where((p) =>
+          p.name.contains('Beanie') ||
+          p.name.contains('Cap') ||
+          p.name.contains('Tote') ||
+          p.name.contains('Scarf') ||
+          p.name.contains('Bottle') ||
+          p.name.contains('Lanyard') ||
+          p.name.contains('Notebook') ||
+          p.name.contains('Mug') ||
+          p.name.contains('Sticker'));
+    }
+
+    // 2) Apply sort
+    final List<Product> working = filtered.toList();
+    if (_selectedSort == 'Price, low to high') {
+      working.sort((a, b) => a.price.compareTo(b.price));
+    } else if (_selectedSort == 'Price, high to low') {
+      working.sort((a, b) => b.price.compareTo(a.price));
+    }
+    // "Featured" keeps original order.
+
+    // 3) Pagination
+    final int totalProducts = working.length;
+    final int totalPages =
+        totalProducts == 0 ? 1 : ((totalProducts - 1) / _pageSize).floor() + 1;
+
+    final int start = _currentPage * _pageSize;
+    final int end = min(start + _pageSize, totalProducts);
+    final List<Product> pageProducts = (start < totalProducts)
+        ? working.sublist(start, end)
+        : const <Product>[];
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.collectionTitle),
-        centerTitle: true,
-      ),
+      appBar: const ResponsiveNavbar(),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final crossAxisCount = constraints.maxWidth > 1000
@@ -161,88 +102,15 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    'Shop all of this seasons must haves in one place!',
+                    "Shop all of this seasons must haves in one place!",
                   ),
                   const SizedBox(height: 24),
 
-                  // FILTER / SORT / COUNT ROW
-                  LayoutBuilder(
-                    builder: (context, innerConstraints) {
-                      final isNarrow = innerConstraints.maxWidth < 700;
-
-                      final filterRow = Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Text('Filter by'),
-                          const SizedBox(width: 8),
-                          DropdownButton<String>(
-                            key: const Key('collection_filter_dropdown'),
-                            value: _selectedFilter,
-                            underline: const SizedBox.shrink(),
-                            items: _filterOptions
-                                .map(
-                                  (opt) => DropdownMenuItem<String>(
-                                    value: opt,
-                                    child: Text(opt),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: _onFilterChanged,
-                          ),
-                        ],
-                      );
-
-                      final sortRow = Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Text('Sort by'),
-                          const SizedBox(width: 8),
-                          DropdownButton<String>(
-                            key: const Key('collection_sort_dropdown'),
-                            value: _selectedSort,
-                            underline: const SizedBox.shrink(),
-                            items: _sortOptions
-                                .map(
-                                  (opt) => DropdownMenuItem<String>(
-                                    value: opt,
-                                    child: Text(opt),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: _onSortChanged,
-                          ),
-                        ],
-                      );
-
-                      final countText =
-                          Text('$totalProducts products');
-
-                      if (isNarrow) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            filterRow,
-                            const SizedBox(height: 8),
-                            sortRow,
-                            const SizedBox(height: 8),
-                            countText,
-                          ],
-                        );
-                      }
-
-                      // Wide layout – use Wrap to avoid overflow in tests
-                      return Wrap(
-                        spacing: 24,
-                        runSpacing: 8,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        alignment: WrapAlignment.spaceBetween,
-                        children: [
-                          filterRow,
-                          sortRow,
-                          countText,
-                        ],
-                      );
-                    },
+                  // Filters / sort row (now functional)
+                  _buildFilterBar(
+                    context: context,
+                    maxWidth: constraints.maxWidth,
+                    totalProducts: totalProducts,
                   ),
 
                   const SizedBox(height: 24),
@@ -258,41 +126,158 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
                       crossAxisSpacing: 16,
                       childAspectRatio: 3 / 4,
                     ),
-                    itemCount: products.length,
+                    itemCount: pageProducts.length,
                     itemBuilder: (context, index) {
-                      final product = products[index];
+                      final Product product = pageProducts[index];
                       return _ProductCard(product: product);
                     },
                   ),
 
-                  const SizedBox(height: 16),
-
-                  if (_totalPages > 1)
+                  // Pagination controls
+                  if (totalPages > 1) ...[
+                    const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         IconButton(
-                          key: const Key('collection_prev_page'),
-                          icon: const Icon(Icons.chevron_left),
-                          onPressed:
-                              _currentPage == 0 ? null : _goToPreviousPage,
-                        ),
-                        Text('Page ${_currentPage + 1} of $_totalPages'),
-                        IconButton(
-                          key: const Key('collection_next_page'),
-                          icon: const Icon(Icons.chevron_right),
-                          onPressed: _currentPage >= _totalPages - 1
+                          key: const ValueKey('collection_prev_page'),
+                          onPressed: _currentPage == 0
                               ? null
-                              : _goToNextPage,
+                              : () {
+                                  setState(() {
+                                    _currentPage--;
+                                  });
+                                },
+                          icon: const Icon(Icons.chevron_left),
+                        ),
+                        Text('Page ${_currentPage + 1} of $totalPages'),
+                        IconButton(
+                          key: const ValueKey('collection_next_page'),
+                          onPressed: _currentPage >= totalPages - 1
+                              ? null
+                              : () {
+                                  setState(() {
+                                    _currentPage++;
+                                  });
+                                },
+                          icon: const Icon(Icons.chevron_right),
                         ),
                       ],
                     ),
+                  ],
                 ],
               ),
             ),
           );
         },
       ),
+    );
+  }
+
+  Widget _buildFilterBar({
+    required BuildContext context,
+    required double maxWidth,
+    required int totalProducts,
+  }) {
+    final textTheme = Theme.of(context).textTheme;
+
+    final filterRow = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text('Filter by'),
+        const SizedBox(width: 8),
+        DropdownButton<String>(
+          key: const ValueKey('collection_filter_dropdown'),
+          value: _selectedFilter,
+          underline: const SizedBox.shrink(),
+          items: const [
+            DropdownMenuItem(
+              value: 'All products',
+              child: Text('All products'),
+            ),
+            DropdownMenuItem(
+              value: 'Hoodies & Sweatshirts',
+              child: Text('Hoodies & Sweatshirts'),
+            ),
+            DropdownMenuItem(
+              value: 'Accessories',
+              child: Text('Accessories'),
+            ),
+          ],
+          onChanged: (value) {
+            if (value == null) return;
+            setState(() {
+              _selectedFilter = value;
+              _currentPage = 0;
+            });
+          },
+        ),
+      ],
+    );
+
+    final sortRow = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text('Sort by'),
+        const SizedBox(width: 8),
+        DropdownButton<String>(
+          key: const ValueKey('collection_sort_dropdown'),
+          value: _selectedSort,
+          underline: const SizedBox.shrink(),
+          items: const [
+            DropdownMenuItem(
+              value: 'Featured',
+              child: Text('Featured'),
+            ),
+            DropdownMenuItem(
+              value: 'Price, low to high',
+              child: Text('Price, low to high'),
+            ),
+            DropdownMenuItem(
+              value: 'Price, high to low',
+              child: Text('Price, high to low'),
+            ),
+          ],
+          onChanged: (value) {
+            if (value == null) return;
+            setState(() {
+              _selectedSort = value;
+              _currentPage = 0;
+            });
+          },
+        ),
+      ],
+    );
+
+    final countText = Text(
+      '$totalProducts products',
+      style: textTheme.bodySmall,
+    );
+
+    final isNarrow = maxWidth < 600;
+
+    if (isNarrow) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          filterRow,
+          const SizedBox(height: 8),
+          sortRow,
+          const SizedBox(height: 8),
+          countText,
+        ],
+      );
+    }
+
+    return Wrap(
+      spacing: 24,
+      runSpacing: 8,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        filterRow,
+        sortRow,
+        countText,
+      ],
     );
   }
 }

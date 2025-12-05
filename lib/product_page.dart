@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:union_shop/footer.dart';
 import 'package:union_shop/models/product.dart';
+import 'package:union_shop/models/cart_model.dart';
+import 'package:union_shop/models/collection_product.dart';
+import 'package:union_shop/widgets/responsive_navbar.dart';
 
 class ProductPage extends StatefulWidget {
   final Product product;
@@ -23,20 +26,14 @@ class _ProductPageState extends State<ProductPage> {
   void initState() {
     super.initState();
 
-    // Build the gallery from the product model.
-    _imageUrls = [
-      widget.product.mainImage,
-      ...widget.product.galleryImages,
-    ];
-
-    // Make sure we have at least 4 tiles so the gallery strip looks full.
-    while (_imageUrls.length < 4) {
-      _imageUrls.add(widget.product.mainImage);
-    }
+    _imageUrls = widget.product.galleryImages.isNotEmpty
+        ? widget.product.galleryImages
+        : <String>[widget.product.mainImage];
 
     _selectedColor = widget.product.colours.isNotEmpty
         ? widget.product.colours.first
         : null;
+
     _selectedSize = widget.product.sizes.isNotEmpty
         ? widget.product.sizes.first
         : null;
@@ -47,10 +44,7 @@ class _ProductPageState extends State<ProductPage> {
     final bool isWide = MediaQuery.of(context).size.width >= 900;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('The Union'),
-        centerTitle: true,
-      ),
+      appBar: const ResponsiveNavbar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -85,21 +79,14 @@ class _ProductPageState extends State<ProductPage> {
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
-                widget.product.description,
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Soft, comfortable, 50% cotton and 50% polyester.',
-              ),
+              Text(widget.product.description),
               const SizedBox(height: 24),
               Wrap(
                 spacing: 8,
                 children: [
                   OutlinedButton(onPressed: () {}, child: const Text('SHARE')),
                   OutlinedButton(onPressed: () {}, child: const Text('TWEET')),
-                  OutlinedButton(
-                      onPressed: () {}, child: const Text('PIN IT')),
+                  OutlinedButton(onPressed: () {}, child: const Text('PIN IT')),
                 ],
               ),
               const SizedBox(height: 24),
@@ -182,56 +169,54 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   Widget _buildDetails(BuildContext context) {
-    final product = widget.product;
+    final List<Widget> children = [];
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          product.name,
-          style: const TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-          ),
+    children.addAll([
+      Text(
+        widget.product.name,
+        style: const TextStyle(
+          fontSize: 28,
+          fontWeight: FontWeight.bold,
         ),
-        const SizedBox(height: 8),
-        Text(
-          '£${product.price.toStringAsFixed(2)}',
-          style: const TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w600,
-          ),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        '£${widget.product.price.toStringAsFixed(2)}',
+        style: const TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.w600,
         ),
-        const SizedBox(height: 4),
-        Text(
-          'Tax included.',
-          style: TextStyle(color: Colors.grey.shade700),
-        ),
-        const SizedBox(height: 24),
+      ),
+      const SizedBox(height: 4),
+      Text(
+        'Tax included.',
+        style: TextStyle(color: Colors.grey.shade700),
+      ),
+      const SizedBox(height: 24),
+    ]);
 
-        // Color / Size row – only show dropdowns if the product has values.
+    if (widget.product.colours.isNotEmpty) {
+      children.add(
         Row(
           children: [
-            if (product.colours.isNotEmpty && _selectedColor != null)
-              Expanded(
-                child: _buildDropdown(
-                  label: 'Color',
-                  value: _selectedColor!,
-                  options: product.colours,
-                  onChanged: (value) {
-                    if (value == null) return;
-                    setState(() => _selectedColor = value);
-                  },
-                ),
+            Expanded(
+              child: _buildDropdown(
+                label: 'Color',
+                value: _selectedColor!,
+                options: widget.product.colours,
+                onChanged: (value) {
+                  if (value == null) return;
+                  setState(() => _selectedColor = value);
+                },
               ),
-            if (product.colours.isNotEmpty && _selectedColor != null)
-              const SizedBox(width: 16),
-            if (product.sizes.isNotEmpty && _selectedSize != null)
+            ),
+            const SizedBox(width: 16),
+            if (widget.product.sizes.isNotEmpty)
               Expanded(
                 child: _buildDropdown(
                   label: 'Size',
                   value: _selectedSize!,
-                  options: product.sizes,
+                  options: widget.product.sizes,
                   onChanged: (value) {
                     if (value == null) return;
                     setState(() => _selectedSize = value);
@@ -240,30 +225,72 @@ class _ProductPageState extends State<ProductPage> {
               ),
           ],
         ),
-        const SizedBox(height: 16),
-        _buildQuantitySelector(context),
-        const SizedBox(height: 24),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () {},
-            child: const Text('ADD TO CART'),
-          ),
+      );
+      children.add(const SizedBox(height: 16));
+    }
+
+    children.addAll([
+      _buildQuantitySelector(context),
+      const SizedBox(height: 24),
+      // ADD TO CART (this is what was missing)
+      SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: () {
+            final cartProduct = CollectionProduct(
+              name: widget.product.name,
+              price: '£${widget.product.price.toStringAsFixed(2)}',
+              imageUrl: widget.product.mainImage,
+            );
+
+            cartModel.addItem(
+              cartProduct,
+              colour: _selectedColor ?? 'Default',
+              size: _selectedSize ??
+                  (widget.product.sizes.isNotEmpty
+                      ? widget.product.sizes.first
+                      : 'One size'),
+              quantity: _quantity,
+            );
+
+            ScaffoldMessenger.of(context)
+              ..clearSnackBars()
+              ..showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Added $_quantity × ${widget.product.name} to your cart.',
+                  ),
+                  duration: const Duration(seconds: 2),
+                  action: SnackBarAction(
+                    label: 'VIEW CART',
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/cart');
+                    },
+                  ),
+                ),
+              );
+          },
+          child: const Text('ADD TO CART'),
         ),
-        const SizedBox(height: 12),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () {},
-            child: const Text('Buy with Shop'),
-          ),
-        ),
-        const SizedBox(height: 8),
-        TextButton(
+      ),
+      const SizedBox(height: 12),
+      SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
           onPressed: () {},
-          child: const Text('More payment options'),
+          child: const Text('Buy with Shop'),
         ),
-      ],
+      ),
+      const SizedBox(height: 8),
+      TextButton(
+        onPressed: () {},
+        child: const Text('More payment options'),
+      ),
+    ]);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
     );
   }
 
@@ -279,7 +306,7 @@ class _ProductPageState extends State<ProductPage> {
         Text(label),
         const SizedBox(height: 4),
         DropdownButtonFormField<String>(
-          value: value,
+          initialValue: value,
           items: options
               .map(
                 (option) => DropdownMenuItem<String>(

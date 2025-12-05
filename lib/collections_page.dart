@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:union_shop/collection_detail_page.dart';
 import 'package:union_shop/data/product_data.dart';
 import 'package:union_shop/models/product.dart';
+import 'package:union_shop/widgets/responsive_navbar.dart';
 
 class CollectionsPage extends StatefulWidget {
   const CollectionsPage({super.key});
@@ -97,10 +98,7 @@ class _CollectionsPageState extends State<CollectionsPage> {
     final totalCollections = _filteredAndSorted.length;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Collections'),
-        centerTitle: true,
-      ),
+      appBar: const ResponsiveNavbar(),
       body: LayoutBuilder(
         builder: (context, constraints) {
           // Simple responsive grid: 1 / 2 / 3 columns
@@ -315,9 +313,6 @@ const Map<String, String> _collectionCategoryByTitle = {
 };
 
 /// Build collection tiles dynamically from the shared product data model.
-///
-/// This is what satisfies the “Collections page populated from data models
-/// or services” requirement – we are not hard-coding the collections here.
 List<CollectionTile> _buildCollectionTiles() {
   final List<CollectionTile> tiles = [];
 
@@ -376,8 +371,6 @@ class _CollectionCard extends StatelessWidget {
               collection.imageUrl,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
-                // In tests (and if the URL is unreachable), we fall back to a
-                // simple grey box instead of throwing framework errors.
                 return Container(color: Colors.grey.shade300);
               },
             ),

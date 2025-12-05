@@ -60,7 +60,7 @@ Use this checklist to track which spec items you’ve implemented.
   - Products for a collection loaded from data models or services  
   - Working sorting / filtering / pagination
 
-- [ ] **Functional Product Pages** (6%)  
+- [x] **Functional Product Pages** (6%)  
   - Product details populated from data models/services  
   - Working dropdowns (e.g. size/colour)  
   - Working counters (quantity selector)  

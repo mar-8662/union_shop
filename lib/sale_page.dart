@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:union_shop/footer.dart';
+import 'package:union_shop/widgets/responsive_navbar.dart';
+
 
 class SaleProduct {
   final String name;
@@ -56,6 +58,7 @@ class SalePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const ResponsiveNavbar(),
       body: Column(
         children: [
           // Scrollable content

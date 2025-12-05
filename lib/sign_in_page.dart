@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:union_shop/footer.dart';
+import 'package:union_shop/widgets/responsive_navbar.dart';
+
 
 class SignInPage extends StatelessWidget {
   const SignInPage({super.key});
@@ -9,10 +11,9 @@ class SignInPage extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Union Shop'),
-      ),
+      appBar: const ResponsiveNavbar(),
       body: Container(
+
         color: const Color(0xFFF5F5F7),
         alignment: Alignment.topCenter,
         child: SingleChildScrollView(
@@ -58,11 +59,12 @@ class SignInPage extends StatelessWidget {
                             ),
                             const SizedBox(height: 24),
                             Text(
-                              'Sign in',
+                              'Sign in to your shop account',
                               style: theme.textTheme.headlineSmall?.copyWith(
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
+
                             const SizedBox(height: 8),
                             Text(
                               "Choose how you'd like to sign in",
