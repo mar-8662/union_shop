@@ -1,4 +1,3 @@
-// lib/footer.dart
 import 'package:flutter/material.dart';
 
 class UnionFooter extends StatelessWidget {
@@ -25,7 +24,7 @@ class UnionFooter extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          // Footer “links”
+          // Footer links
           Wrap(
             spacing: 16,
             runSpacing: 8,

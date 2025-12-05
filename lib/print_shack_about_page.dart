@@ -1,4 +1,3 @@
-// lib/print_shack_about_page.dart
 import 'package:flutter/material.dart';
 import 'package:union_shop/data/product_data.dart';
 import 'package:union_shop/footer.dart';
@@ -42,7 +41,7 @@ class PrintShackAboutPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 24),
 
-                    // Simple 3-panel hero (no network calls, works in tests)
+                    // Simple 3-panel hero
                     LayoutBuilder(
                       builder: (context, constraints) {
                         final isWide = constraints.maxWidth >= 800;
@@ -80,7 +79,7 @@ class PrintShackAboutPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 24),
 
-                    // Text sections (paraphrased from real site)
+                    // Text sections
                     Text(
                       'Make it yours at The Union Print Shack',
                       style: theme.textTheme.titleMedium?.copyWith(

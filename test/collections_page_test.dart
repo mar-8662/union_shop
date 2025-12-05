@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-
 import 'package:union_shop/collections_page.dart';
 import 'package:union_shop/collection_detail_page.dart';
 import 'package:union_shop/product_page.dart';
@@ -19,8 +18,7 @@ void main() {
       // Page title
       expect(find.text('Collections'), findsOneWidget);
 
-      // At least a couple of known collections from productIdsByCollection
-      // (others may be off-screen due to pagination).
+      // Check if some collections from productIdsByCollection appear
       expect(find.text('Autumn Favourites'), findsWidgets);
       expect(find.text('Black Friday'), findsWidgets);
 
@@ -32,7 +30,6 @@ void main() {
     });
   });
 
-
   testWidgets(
       'Tap a collection → CollectionDetailPage shows products from product_data → tap product → ProductPage',
       (WidgetTester tester) async {
@@ -42,22 +39,39 @@ void main() {
           home: CollectionsPage(),
         ),
       );
-
-      // Tap the "Autumn Favourites" collection tile
-      await tester.tap(find.text('Autumn Favourites').first);
       await tester.pumpAndSettle();
 
-      // Now we're on the detail page for that collection
+      // Tap the "Autumn Favourites" collection tile
+      final collectionText = find.text('Autumn Favourites').first;
+      await tester.ensureVisible(collectionText);
+      await tester.pump();
+
+      final collectionCard = find.ancestor(
+        of: collectionText,
+        matching: find.byType(InkWell),
+      ).first;
+
+      await tester.tap(collectionCard);
+      await tester.pumpAndSettle();
+
+      // Detail page for that collection
       expect(find.byType(CollectionDetailPage), findsOneWidget);
       expect(find.text('Autumn Favourites'), findsWidgets);
 
       // One of the products mapped to Autumn Favourites in product_data.dart
-      // is "Classic Sweatshirt - Black" (id p1).
-      final productFinder = find.text('Classic Sweatshirt - Black');
-      expect(productFinder, findsWidgets);
+      final productText = find.text('Classic Sweatshirt - Black').first;
+      expect(productText, findsOneWidget);
 
-      // Tap the product card to navigate to ProductPage
-      await tester.tap(productFinder.first);
+      // Tap the product card (its InkWell ancestor), not just the Text
+      final productCard = find.ancestor(
+        of: productText,
+        matching: find.byType(InkWell),
+      ).first;
+
+      await tester.ensureVisible(productCard);
+      await tester.pump();
+
+      await tester.tap(productCard);
       await tester.pumpAndSettle();
 
       expect(find.byType(ProductPage), findsOneWidget);
@@ -75,7 +89,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Initially: All collections
+      // All collections
       expect(find.text('All collections'), findsOneWidget);
       expect(find.text('A-Z'), findsOneWidget);
 
@@ -89,7 +103,7 @@ void main() {
       expect(find.text('Black Friday'), findsWidgets);
       expect(find.text('Elections Discounts'), findsWidgets);
 
-      // Change sorting option – just check that the chosen label updates
+      // Change sorting option – check that the chosen label updates
       await tester.tap(find.text('A-Z').first);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Z-A').last);

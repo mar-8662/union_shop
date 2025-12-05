@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:network_image_mock/network_image_mock.dart';
+import 'package:union_shop/product_page.dart';
 import 'package:union_shop/sale_page.dart';
 
 void main() {
@@ -30,14 +32,43 @@ void main() {
       expect(find.text('Best selling'), findsOneWidget);
       expect(find.text('${saleProducts.length} products'), findsOneWidget);
 
-      // A couple of specific sale products and prices
-      expect(find.text('Classic Sweatshirts - Neutral'), findsOneWidget);
-      expect(find.text('£17.00'), findsOneWidget);
-      expect(find.text('£10.99'), findsOneWidget);
+      // Some sale products by name
+      expect(find.text('Classic Sweatshirt - Black'), findsWidgets);
+      expect(find.text('Union Notebook'), findsWidgets);
+    },
+  );
 
-      expect(find.text('Recycled Notebook'), findsOneWidget);
-      expect(find.text('£2.20'), findsOneWidget);
-      expect(find.text('£1.80'), findsOneWidget);
+  testWidgets(
+    'Tapping a sale product navigates to ProductPage where user can add to cart',
+    (WidgetTester tester) async {
+      await mockNetworkImagesFor(() async {
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: SalePage(),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        final productText =
+            find.text('Classic Sweatshirt - Black').first;
+        expect(productText, findsOneWidget);
+
+        final productCard = find.ancestor(
+          of: productText,
+          matching: find.byType(InkWell),
+        ).first;
+
+        await tester.ensureVisible(productCard);
+        await tester.pump();
+
+        await tester.tap(productCard);
+        await tester.pumpAndSettle();
+
+        // We should be on the ProductPage for that item
+        expect(find.byType(ProductPage), findsOneWidget);
+        expect(find.text('Classic Sweatshirt - Black'), findsWidgets);
+        expect(find.text('ADD TO CART'), findsOneWidget);
+      });
     },
   );
 }

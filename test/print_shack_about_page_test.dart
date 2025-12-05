@@ -19,7 +19,7 @@ void main() {
       findsOneWidget,
     );
 
-    // Uses the Print Shack products from product_data.dart
+    // Use the Print Shack products from product_data.dart
     expect(find.text('Popular Print Shack products'), findsOneWidget);
     expect(find.text('Print Shack Custom Hoodie'), findsOneWidget);
     expect(find.text('Print Shack Custom Tee'), findsOneWidget);

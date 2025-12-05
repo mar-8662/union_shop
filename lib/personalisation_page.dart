@@ -1,4 +1,3 @@
-// lib/personalisation_page.dart
 import 'package:flutter/material.dart';
 import 'package:union_shop/footer.dart';
 import 'package:union_shop/models/cart_model.dart';
@@ -229,7 +228,7 @@ class _PersonalisationPageState extends State<PersonalisationPage> {
         const SizedBox(height: 4),
         DropdownButtonFormField<_PersonalisationLines>(
           key: const Key('personalisation_line_dropdown'),
-          value: _selectedLines,
+          initialValue: _selectedLines,
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
             contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -250,11 +249,12 @@ class _PersonalisationPageState extends State<PersonalisationPage> {
               _selectedLines = value;
             });
           },
-        ),
+),
+
         const SizedBox(height: 16),
 
         // Line 1
-        Text('Personalisation line 1'),
+        const Text('Personalisation line 1'),
         const SizedBox(height: 4),
         TextField(
           key: const Key('personalisation_line1_field'),
@@ -269,7 +269,7 @@ class _PersonalisationPageState extends State<PersonalisationPage> {
 
         // Line 2 appears only when "two lines" is selected
         if (_selectedLines == _PersonalisationLines.two) ...[
-          Text('Personalisation line 2'),
+          const Text('Personalisation line 2'),
           const SizedBox(height: 4),
           TextField(
             key: const Key('personalisation_line2_field'),

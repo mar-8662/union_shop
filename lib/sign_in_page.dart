@@ -21,7 +21,6 @@ class SignInPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 16),
             child: Column(
               children: [
-                // Centered auth card
                 Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 480),
@@ -95,7 +94,6 @@ class SignInPage extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 16),
-
                             // Divider with “or”
                             Row(
                               children: [
@@ -128,7 +126,7 @@ class SignInPage extends StatelessWidget {
                             ),
                             const SizedBox(height: 16),
 
-                            // Continue button (grey like screenshot)
+                            // Continue button
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
@@ -158,7 +156,7 @@ class SignInPage extends StatelessWidget {
 
                 const SizedBox(height: 32),
 
-                // Small product strip using some of the 30 products
+                // Small product strip
                 ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 1024),
                   child: Column(
@@ -171,10 +169,10 @@ class SignInPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      Wrap(
+                      const Wrap(
                         spacing: 16,
                         runSpacing: 16,
-                        children: const [
+                        children: [
                           _SimpleProductCard(
                             name: 'Portsmouth City Postcard',
                             price: '£2.50',
@@ -194,8 +192,6 @@ class SignInPage extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 32),
-
-                // Keep your established footer layout
                 const UnionFooter(),
               ],
             ),

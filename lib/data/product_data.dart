@@ -1,8 +1,6 @@
-// lib/data/product_data.dart
-
 import 'package:union_shop/models/product.dart';
 
-// Using picsum so we always get valid placeholder images
+// Using picsum
 const String _sweatImage1 = 'https://picsum.photos/seed/union-sweat-1/800/800';
 const String _sweatImage2 = 'https://picsum.photos/seed/union-sweat-2/800/800';
 const String _hoodieImage1 = 'https://picsum.photos/seed/union-hoodie-1/800/800';
@@ -234,7 +232,7 @@ const List<Product> dummyProducts = [
     mainImage: _accessoryImage1,
     galleryImages: [_accessoryImage1],
     colours: ['Black', 'Purple', 'Grey'],
-    sizes: const [],
+    sizes: [],
     collection: 'Accessories',
   ),
   Product(
@@ -245,7 +243,7 @@ const List<Product> dummyProducts = [
     mainImage: _accessoryImage2,
     galleryImages: [_accessoryImage2],
     colours: ['Black', 'Navy'],
-    sizes: const [],
+    sizes: [],
     collection: 'Accessories',
   ),
   Product(
@@ -257,7 +255,7 @@ const List<Product> dummyProducts = [
     mainImage: _accessoryImage1,
     galleryImages: [_accessoryImage1],
     colours: ['Purple/White'],
-    sizes: const [],
+    sizes: [],
     collection: 'Accessories',
   ),
   Product(
@@ -268,7 +266,7 @@ const List<Product> dummyProducts = [
     mainImage: _accessoryImage2,
     galleryImages: [_accessoryImage2],
     colours: ['Natural'],
-    sizes: const [],
+    sizes: [],
     collection: 'Accessories',
   ),
   Product(
@@ -280,7 +278,7 @@ const List<Product> dummyProducts = [
     mainImage: _accessoryImage1,
     galleryImages: [_accessoryImage1],
     colours: ['Purple', 'Black'],
-    sizes: const [],
+    sizes: [],
     collection: 'Accessories',
   ),
   Product(
@@ -292,7 +290,7 @@ const List<Product> dummyProducts = [
     mainImage: _accessoryImage2,
     galleryImages: [_accessoryImage2],
     colours: ['White'],
-    sizes: const [],
+    sizes: [],
     collection: 'Accessories',
   ),
   Product(
@@ -303,7 +301,7 @@ const List<Product> dummyProducts = [
     mainImage: _accessoryImage1,
     galleryImages: [_accessoryImage1],
     colours: ['Purple'],
-    sizes: const [],
+    sizes: [],
     collection: 'Accessories',
   ),
   Product(
@@ -315,7 +313,7 @@ const List<Product> dummyProducts = [
     mainImage: _accessoryImage2,
     galleryImages: [_accessoryImage2],
     colours: ['Purple', 'Black'],
-    sizes: const [],
+    sizes: [],
     collection: 'Accessories',
   ),
   Product(
@@ -325,8 +323,8 @@ const List<Product> dummyProducts = [
     price: 5.00,
     mainImage: _accessoryImage1,
     galleryImages: [_accessoryImage1],
-    colours: const [],
-    sizes: const [],
+    colours: [],
+    sizes: [],
     collection: 'Accessories',
   ),
 
@@ -363,7 +361,7 @@ const List<Product> dummyProducts = [
     mainImage: _accessoryImage2,
     galleryImages: [_accessoryImage2],
     colours: ['Natural'],
-    sizes: const [],
+    sizes: [],
     collection: 'Print Shack',
   ),
 
@@ -382,7 +380,7 @@ const List<Product> dummyProducts = [
   ),
 ];
 
-// Map collection titles (as used on the Collections pages) to Product IDs.
+// Map collection titles (as used on the Collections pages) to Product IDs
 const Map<String, List<String>> productIdsByCollection = {
   'Autumn Favourites': ['p1', 'p5', 'p9', 'p18', 'p21'],
   'Black Friday': ['p5', 'p6', 'p9', 'p12'],

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:union_shop/footer.dart';
 import 'package:union_shop/search_page.dart';
 import 'package:union_shop/widgets/responsive_navbar.dart';

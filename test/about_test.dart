@@ -11,7 +11,7 @@ void main() {
     // Heading
     expect(find.text('About the Union Shop'), findsOneWidget);
 
-    // Body text (just check part of it)
+    // Body text (checking part of it)
     expect(
       find.textContaining("operated by the Students' Union"),
       findsOneWidget,

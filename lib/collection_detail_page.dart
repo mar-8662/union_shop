@@ -1,11 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:union_shop/data/product_data.dart';
+import 'package:union_shop/footer.dart';
 import 'package:union_shop/models/product.dart';
 import 'package:union_shop/product_page.dart';
 import 'package:union_shop/widgets/responsive_navbar.dart';
-
 
 class CollectionDetailPage extends StatefulWidget {
   final String collectionTitle;
@@ -27,307 +25,245 @@ class CollectionDetailPage extends StatefulWidget {
 }
 
 class _CollectionDetailPageState extends State<CollectionDetailPage> {
-  static const int _pageSize = 9;
-
   String _selectedFilter = 'All products';
   String _selectedSort = 'Featured';
-  int _currentPage = 0;
+
+  late final List<Product> _allProducts;
+
+  @override
+  void initState() {
+    super.initState();
+    _allProducts = productsForCollection(widget.collectionTitle);
+  }
+
+  List<Product> get _visibleProducts {
+    final products = List<Product>.from(_allProducts);
+
+    if (_selectedFilter != 'All products') {
+    }
+
+    switch (_selectedSort) {
+      case 'A-Z':
+        products.sort((a, b) => a.name.compareTo(b.name));
+        break;
+      case 'Z-A':
+        products.sort((a, b) => b.name.compareTo(a.name));
+        break;
+      case 'Featured':
+      default:
+        // Keep original order
+        break;
+    }
+
+    return products;
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Get the real Product models for this collection from product_data.dart
-    final List<Product> allProducts =
-        productsForCollection(widget.collectionTitle);
+    final size = MediaQuery.of(context).size;
 
-    // 1) Apply filter
-    Iterable<Product> filtered = allProducts;
-    if (_selectedFilter == 'Hoodies & Sweatshirts') {
-      filtered = filtered.where((p) =>
-          p.name.contains('Hoodie') || p.name.contains('Sweatshirt'));
-    } else if (_selectedFilter == 'Accessories') {
-      filtered = filtered.where((p) =>
-          p.name.contains('Beanie') ||
-          p.name.contains('Cap') ||
-          p.name.contains('Tote') ||
-          p.name.contains('Scarf') ||
-          p.name.contains('Bottle') ||
-          p.name.contains('Lanyard') ||
-          p.name.contains('Notebook') ||
-          p.name.contains('Mug') ||
-          p.name.contains('Sticker'));
+    int crossAxisCount = 2;
+    if (size.width >= 1100) {
+      crossAxisCount = 4;
+    } else if (size.width >= 800) {
+      crossAxisCount = 3;
+    } else if (size.width < 500) {
+      crossAxisCount = 1;
     }
-
-    // 2) Apply sort
-    final List<Product> working = filtered.toList();
-    if (_selectedSort == 'Price, low to high') {
-      working.sort((a, b) => a.price.compareTo(b.price));
-    } else if (_selectedSort == 'Price, high to low') {
-      working.sort((a, b) => b.price.compareTo(a.price));
-    }
-    // "Featured" keeps original order.
-
-    // 3) Pagination
-    final int totalProducts = working.length;
-    final int totalPages =
-        totalProducts == 0 ? 1 : ((totalProducts - 1) / _pageSize).floor() + 1;
-
-    final int start = _currentPage * _pageSize;
-    final int end = min(start + _pageSize, totalProducts);
-    final List<Product> pageProducts = (start < totalProducts)
-        ? working.sublist(start, end)
-        : const <Product>[];
 
     return Scaffold(
       appBar: const ResponsiveNavbar(),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final crossAxisCount = constraints.maxWidth > 1000
-              ? 3
-              : constraints.maxWidth > 650
-                  ? 2
-                  : 1;
-
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Page heading
-                  Text(
-                    widget.collectionTitle,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    "Shop all of this seasons must haves in one place!",
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Filters / sort row (now functional)
-                  _buildFilterBar(
-                    context: context,
-                    maxWidth: constraints.maxWidth,
-                    totalProducts: totalProducts,
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Products grid
-                  GridView.builder(
-                    key: const ValueKey('collection-products-grid'),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: crossAxisCount,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                      childAspectRatio: 3 / 4,
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Center(
+                      child: Text(
+                        widget.collectionTitle,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
                     ),
-                    itemCount: pageProducts.length,
-                    itemBuilder: (context, index) {
-                      final Product product = pageProducts[index];
-                      return _ProductCard(product: product);
-                    },
-                  ),
-
-                  // Pagination controls
-                  if (totalPages > 1) ...[
+                    const SizedBox(height: 8),
+                    const Center(
+                      child: Text(
+                        'Shop all of this seasons must haves in one place!',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    _buildFilterBar(context),
                     const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          key: const ValueKey('collection_prev_page'),
-                          onPressed: _currentPage == 0
-                              ? null
-                              : () {
-                                  setState(() {
-                                    _currentPage--;
-                                  });
-                                },
-                          icon: const Icon(Icons.chevron_left),
-                        ),
-                        Text('Page ${_currentPage + 1} of $totalPages'),
-                        IconButton(
-                          key: const ValueKey('collection_next_page'),
-                          onPressed: _currentPage >= totalPages - 1
-                              ? null
-                              : () {
-                                  setState(() {
-                                    _currentPage++;
-                                  });
-                                },
-                          icon: const Icon(Icons.chevron_right),
-                        ),
-                      ],
+                    GridView.builder(
+                      key: const ValueKey('collection-products-grid'),
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: _visibleProducts.length,
+                      gridDelegate:
+                          SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: crossAxisCount,
+                        mainAxisSpacing: 16,
+                        crossAxisSpacing: 16,
+                        childAspectRatio: 0.7,
+                      ),
+                      itemBuilder: (context, index) {
+                        final product = _visibleProducts[index];
+                        return _CollectionProductCard(product: product);
+                      },
                     ),
                   ],
-                ],
+                ),
               ),
             ),
-          );
-        },
+          ),
+          const UnionFooter(),
+        ],
       ),
     );
   }
 
-  Widget _buildFilterBar({
-    required BuildContext context,
-    required double maxWidth,
-    required int totalProducts,
-  }) {
+  Widget _buildFilterBar(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    final filterRow = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Text('Filter by'),
-        const SizedBox(width: 8),
-        DropdownButton<String>(
-          key: const ValueKey('collection_filter_dropdown'),
-          value: _selectedFilter,
-          underline: const SizedBox.shrink(),
-          items: const [
-            DropdownMenuItem(
-              value: 'All products',
-              child: Text('All products'),
-            ),
-            DropdownMenuItem(
-              value: 'Hoodies & Sweatshirts',
-              child: Text('Hoodies & Sweatshirts'),
-            ),
-            DropdownMenuItem(
-              value: 'Accessories',
-              child: Text('Accessories'),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isNarrow = constraints.maxWidth < 600;
+
+        final filterRow = Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Filter by', style: textTheme.bodySmall),
+            const SizedBox(width: 8),
+            DropdownButton<String>(
+              value: _selectedFilter,
+              underline: const SizedBox.shrink(),
+              items: const [
+                DropdownMenuItem(
+                  value: 'All products',
+                  child: Text('All products'),
+                ),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  _selectedFilter = value ?? 'All products';
+                });
+              },
             ),
           ],
-          onChanged: (value) {
-            if (value == null) return;
-            setState(() {
-              _selectedFilter = value;
-              _currentPage = 0;
-            });
-          },
-        ),
-      ],
-    );
+        );
 
-    final sortRow = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Text('Sort by'),
-        const SizedBox(width: 8),
-        DropdownButton<String>(
-          key: const ValueKey('collection_sort_dropdown'),
-          value: _selectedSort,
-          underline: const SizedBox.shrink(),
-          items: const [
-            DropdownMenuItem(
-              value: 'Featured',
-              child: Text('Featured'),
-            ),
-            DropdownMenuItem(
-              value: 'Price, low to high',
-              child: Text('Price, low to high'),
-            ),
-            DropdownMenuItem(
-              value: 'Price, high to low',
-              child: Text('Price, high to low'),
+        final sortRow = Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Sort by', style: textTheme.bodySmall),
+            const SizedBox(width: 8),
+            DropdownButton<String>(
+              value: _selectedSort,
+              underline: const SizedBox.shrink(),
+              items: const [
+                DropdownMenuItem(
+                  value: 'Featured',
+                  child: Text('Featured'),
+                ),
+                DropdownMenuItem(
+                  value: 'A-Z',
+                  child: Text('A-Z'),
+                ),
+                DropdownMenuItem(
+                  value: 'Z-A',
+                  child: Text('Z-A'),
+                ),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  _selectedSort = value ?? 'Featured';
+                });
+              },
             ),
           ],
-          onChanged: (value) {
-            if (value == null) return;
-            setState(() {
-              _selectedSort = value;
-              _currentPage = 0;
-            });
-          },
-        ),
-      ],
-    );
+        );
 
-    final countText = Text(
-      '$totalProducts products',
-      style: textTheme.bodySmall,
-    );
+        if (isNarrow) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              filterRow,
+              const SizedBox(height: 8),
+              sortRow,
+            ],
+          );
+        }
 
-    final isNarrow = maxWidth < 600;
-
-    if (isNarrow) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          filterRow,
-          const SizedBox(height: 8),
-          sortRow,
-          const SizedBox(height: 8),
-          countText,
-        ],
-      );
-    }
-
-    return Wrap(
-      spacing: 24,
-      runSpacing: 8,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        filterRow,
-        sortRow,
-        countText,
-      ],
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            filterRow,
+            sortRow,
+          ],
+        );
+      },
     );
   }
 }
 
-class _ProductCard extends StatelessWidget {
+class _CollectionProductCard extends StatelessWidget {
   final Product product;
 
-  const _ProductCard({required this.product});
+  const _CollectionProductCard({required this.product});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // → Product details page
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => ProductPage(product: product),
           ),
         );
       },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AspectRatio(
-            aspectRatio: 4 / 3,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
               child: Image.network(
                 product.mainImage,
                 fit: BoxFit.cover,
-                // Avoid test crashes when HTTP 400 happens in flutter test.
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(color: Colors.grey.shade300);
-                },
+                width: double.infinity,
+                errorBuilder: (_, __, ___) =>
+                    Container(color: Colors.grey.shade300),
               ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            product.name,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            '£${product.price.toStringAsFixed(2)}',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    product.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: 4),
+                  Text('£${product.price.toStringAsFixed(2)}'),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

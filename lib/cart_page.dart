@@ -1,4 +1,3 @@
-// lib/cart_page.dart
 import 'package:flutter/material.dart';
 import 'package:union_shop/footer.dart';
 import 'package:union_shop/models/cart_model.dart';
@@ -120,8 +119,8 @@ class _FilledCart extends StatelessWidget {
               bottom: BorderSide(color: Colors.black12),
             ),
           ),
-          child: Row(
-            children: const [
+          child: const Row(
+            children: [
               Expanded(
                 flex: 4,
                 child: Text(
@@ -179,11 +178,11 @@ class _FilledCart extends StatelessWidget {
         // Note to order
         const Text('Add a note to your order'),
         const SizedBox(height: 8),
-        SizedBox(
+        const SizedBox(
           height: 80,
           child: TextField(
             maxLines: null,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
             ),
           ),

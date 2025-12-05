@@ -16,7 +16,7 @@ class CollectionsPage extends StatefulWidget {
 class _CollectionsPageState extends State<CollectionsPage> {
   static const int _pageSize = 4;
 
-  // Filter / sort state
+  // Filter state
   String _selectedCategory = 'All collections';
   String _selectedSort = 'A-Z';
   int _currentPage = 0;
@@ -291,7 +291,7 @@ class CollectionTile {
   final String imageUrl;
   final int productCount;
   final List<Product> products;
-  final String category; // Seasonal, Sale, Clothing, Essentials
+  final String category;
 
   CollectionTile({
     required this.title,
@@ -375,7 +375,7 @@ class _CollectionCard extends StatelessWidget {
               },
             ),
             Container(
-              color: Colors.black.withOpacity(0.35),
+              color: Colors.black.withValues(alpha: 0.35),
             ),
             Align(
               alignment: Alignment.center,

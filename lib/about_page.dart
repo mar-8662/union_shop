@@ -34,9 +34,9 @@ class AboutUsPage extends StatelessWidget {
               color: Colors.white,
               width: double.infinity,
               padding: const EdgeInsets.all(24),
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   SizedBox(height: 8),
                   Text(
                     'About the Union Shop',

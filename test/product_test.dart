@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-
 import 'package:union_shop/models/product.dart';
 import 'package:union_shop/product_page.dart';
 
 void main() {
-  final Product testProduct = Product(
+  const Product testProduct = Product(
     id: 'test1',
     name: 'Classic Sweatshirts',
     description:
         'Bringing to you our best selling Classic Sweatshirts. Available in multiple colours.',
     price: 23.00,
-    mainImage:
-        'https://example.com/test-image-1.jpg',
-    galleryImages: const [
+    mainImage: 'https://example.com/test-image-1.jpg',
+    galleryImages: [
       'https://example.com/test-image-1.jpg',
       'https://example.com/test-image-2.jpg',
     ],
-    colours: const ['Black', 'Green', 'Purple', 'Grey'],
-    sizes: const ['S', 'M', 'L', 'XL'],
+    colours: ['Black', 'Green', 'Purple', 'Grey'],
+    sizes: ['S', 'M', 'L', 'XL'],
     collection: 'Test Collection',
   );
 
@@ -27,7 +25,7 @@ void main() {
       (WidgetTester tester) async {
     await mockNetworkImagesFor(() async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: ProductPage(product: testProduct),
         ),
       );
@@ -54,7 +52,7 @@ void main() {
       (WidgetTester tester) async {
     await mockNetworkImagesFor(() async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: ProductPage(product: testProduct),
         ),
       );
@@ -78,7 +76,7 @@ void main() {
       (WidgetTester tester) async {
     await mockNetworkImagesFor(() async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: ProductPage(product: testProduct),
         ),
       );

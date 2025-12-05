@@ -1,7 +1,6 @@
-// lib/models/collection_product.dart
 class CollectionProduct {
   final String name;
-  final String price; // e.g. "£23.00"
+  final String price;
   final String imageUrl;
 
   const CollectionProduct({

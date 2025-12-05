@@ -43,7 +43,7 @@ class UnionShopApp extends StatelessWidget {
   }
 }
 
-/// Featured products on home page, using real product data.
+// Featured products on home page
 final List<Product> homeFeaturedProducts = [
   dummyProducts[0],
   dummyProducts[4],

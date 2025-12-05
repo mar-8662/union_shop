@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-
 import 'package:union_shop/collection_detail_page.dart';
 
 void main() {
@@ -25,7 +24,7 @@ void main() {
         findsOneWidget,
       );
 
-      // Filter / sort UI labels
+      // Filter UI labels
       expect(find.text('Filter by'), findsOneWidget);
       expect(find.text('Sort by'), findsOneWidget);
       expect(find.text('All products'), findsOneWidget);
@@ -37,7 +36,7 @@ void main() {
         findsOneWidget,
       );
 
-      // At least a couple of real products from product_data.dart appear
+      // Check if some products from product_data.dart appear
       expect(find.text('Classic Sweatshirt - Black'), findsOneWidget);
       expect(find.text('Campus Hoodie - Navy'), findsOneWidget);
     });

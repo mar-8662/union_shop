@@ -77,13 +77,13 @@ Use this checklist to track which spec items you’ve implemented.
   - Associated “About Print Shack” info section  
   - Form fields that dynamically update what’s shown based on user choices
 
-- [ ] **Navigation** (3%)  
+- [x] **Navigation** (3%)  
   - User can navigate across **all pages** using:  
     - Buttons/links in the UI  
     - Navbar / menu  
     - Direct URLs (named routes)
 
-- [ ] **Responsiveness** (5%)  
+- [x] **Responsiveness** (5%)  
   - App works correctly in mobile view (main focus)  
   - Layout adapts reasonably on wider screens (desktop view)  
 
@@ -96,12 +96,12 @@ Use this checklist to track which spec items you’ve implemented.
   - Account dashboard & relevant account functionality  
   - Not limited to Shop.app – any suitable auth provider is acceptable
 
-- [ ] **Cart Management** (6%)  
+- [x] **Cart Management** (6%)  
   - Full cart behaviour: add/remove items, change quantities  
   - Correct price calculations (line totals, subtotal, etc.)  
   - Cart **persists** (e.g. across app restarts or sessions)
 
-- [ ] **Search System** (4%)  
+- [x] **Search System** (4%)  
   - Search input that filters products/collections  
   - Search buttons in navbar and footer actually work  
   - Results page / inline results behaviour implemented
@@ -110,11 +110,11 @@ Use this checklist to track which spec items you’ve implemented.
 
 ## 2. Software Development Practices (25% of coursework mark)
 
-- [ ] **Git Usage** (8%)  
+- [x] **Git Usage** (8%)  
   - Regular, small, meaningful commits  
   - Clear, descriptive commit messages (no huge “big dump” commits)
 
-- [ ] **README** (5%)  
+- [x] **README** (5%)  
   - Existing starter README removed or replaced  
   - New README explains:  
     - What the app does  
@@ -124,7 +124,7 @@ Use this checklist to track which spec items you’ve implemented.
     - How external services are used  
     - Links to live deployment (if any)
 
-- [ ] **Testing** (6%)  
+- [x] **Testing** (6%)  
   - Widget / unit tests covering most key pages & logic  
   - All tests pass (`flutter test`)  
   - Tests kept up to date as features change
@@ -134,7 +134,7 @@ Use this checklist to track which spec items you’ve implemented.
   - Fully wired into the app (not just configured)  
   - Documented clearly in README (what each service does + how to use/check it)
 
-- [ ] **Code Quality** (implicit requirement)  
+- [x] **Code Quality** (implicit requirement)  
   - Code is formatted (`dart format`)  
   - No errors/warnings/suggestions in `flutter analyze`  
   - Structure is sensible (widgets split into files, minimal repetition)  
@@ -144,10 +144,10 @@ Use this checklist to track which spec items you’ve implemented.
 
 ## 3. Setup & Submission
 
-- [ ] Forked the official `union_shop` repository under my GitHub account  
-- [ ] Cloned fork locally (or into Firebase Studio) and ran `flutter pub get`  
-- [ ] App runs on Chrome in mobile view (`flutter run -d chrome`)  
-- [ ] Public GitHub repo link tested in an incognito window  
-- [ ] Repo link submitted to Moodle **before** deadline  
-- [ ] No commits pushed **after** the deadline
+- [x] Forked the official `union_shop` repository under my GitHub account  
+- [x] Cloned fork locally (or into Firebase Studio) and ran `flutter pub get`  
+- [x] App runs on Chrome in mobile view (`flutter run -d chrome`)  
+- [x] Public GitHub repo link tested in an incognito window  
+- [x] Repo link submitted to Moodle **before** deadline  
+- [x] No commits pushed **after** the deadline
 

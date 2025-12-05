@@ -5,11 +5,11 @@ enum _PrintShackMenuItem {
   about,
 }
 
-/// A responsive top navigation bar:
-/// - On wide screens (desktop/tablet) it shows text links in a row,
-///   including a "The Print Shack" dropdown and a search icon.
-/// - On narrow screens (mobile) it shows a menu button that opens
-///   a bottom sheet, plus a search icon.
+// A responsive top navigation bar:
+//  On wide screens (desktop/tablet) it shows text links in a row,
+//  including a "The Print Shack" dropdown and a search icon.
+//  On narrow screens (mobile) it shows a menu button that opens
+//  a bottom sheet, plus a search icon.
 class ResponsiveNavbar extends StatelessWidget
     implements PreferredSizeWidget {
   const ResponsiveNavbar({super.key});
@@ -88,8 +88,8 @@ class ResponsiveNavbar extends StatelessWidget
                         child: Text('The Union Print Shack'),
                       ),
                     ],
-                    child: Row(
-                      children: const [
+                    child: const Row(
+                      children: [
                         Text(
                           'The Print Shack',
                           style: TextStyle(
@@ -170,13 +170,13 @@ class ResponsiveNavbar extends StatelessWidget
                     showModalBottomSheet<void>(
                       context: context,
                       builder: (context) {
-                        return SafeArea(
+                        return const SafeArea(
                           child: SingleChildScrollView(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment:
                                   CrossAxisAlignment.start,
-                              children: const [
+                              children: [
                                 _MobileNavItem(
                                   label: 'Home',
                                   navKey:
@@ -301,7 +301,7 @@ class _MobileNavItem extends StatelessWidget {
       key: navKey,
       title: Text(label),
       onTap: () {
-        Navigator.pop(context); // close the sheet
+        Navigator.pop(context);
         Navigator.pushNamed(context, routeName);
       },
     );

@@ -1,8 +1,7 @@
-// lib/models/cart_model.dart
 import 'package:flutter/foundation.dart';
 import 'package:union_shop/models/collection_product.dart';
 
-/// A single line item in the cart.
+// A single line item in the cart.
 class CartItem {
   final CollectionProduct product;
   final String colour;
@@ -20,7 +19,7 @@ class CartItem {
   double get totalPrice => unitPrice * quantity;
 }
 
-/// Main cart model, used via the global [cartModel] below.
+// Main cart model, used via the global [cartModel] below.
 class CartModel extends ChangeNotifier {
   final List<CartItem> _items = [];
 
@@ -34,7 +33,7 @@ class CartModel extends ChangeNotifier {
   double get subtotal =>
       _items.fold<double>(0.0, (sum, item) => sum + item.totalPrice);
 
-  /// Add an item. If same product/colour/size already exists, bump quantity.
+  // Add an item. If same product/colour/size already exists, bump quantity.
   void addItem(
     CollectionProduct product, {
     required String colour,
@@ -86,10 +85,10 @@ class CartModel extends ChangeNotifier {
   }
 }
 
-/// Global instance used everywhere (and by tests).
+// Global instance used everywhere (and by tests).
 final CartModel cartModel = CartModel();
 
-/// "£23.00" -> 23.0
+// "£23.00" -> 23.0
 double _parsePrice(String priceString) {
   final cleaned = priceString.replaceAll('£', '').trim();
   return double.tryParse(cleaned) ?? 0.0;

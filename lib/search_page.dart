@@ -1,4 +1,3 @@
-// lib/search_page.dart
 import 'package:flutter/material.dart';
 import 'package:union_shop/data/product_data.dart';
 import 'package:union_shop/footer.dart';
@@ -119,8 +118,6 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
           ),
-
-          // Footer reused everywhere
           const UnionFooter(),
         ],
       ),

@@ -44,7 +44,7 @@ void main() {
         const MaterialApp(
           home: Scaffold(
             appBar: ResponsiveNavbar(),
-            body: SizedBox.shrink(), // no hero/body layout here either
+            body: SizedBox.shrink(), // no hero/body layout here
           ),
         ),
       );

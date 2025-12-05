@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-
 import 'package:union_shop/main.dart';
 import 'package:union_shop/collections_page.dart';
 import 'package:union_shop/product_page.dart';
@@ -33,7 +32,7 @@ void main() {
       );
       expect(find.text('BROWSE COLLECTION'), findsOneWidget);
 
-      // Scroll a bit to make sure featured products are in view
+      // Scroll to make sure featured products are in view
       await tester.drag(
         find.byType(SingleChildScrollView).first,
         const Offset(0, -10),
@@ -42,8 +41,7 @@ void main() {
 
       expect(find.text('Featured products'), findsOneWidget);
 
-      // First featured product now comes from dummyProducts p1:
-      // "Classic Sweatshirt - Black"
+      // First featured product comes from dummyProducts p1:
       expect(find.text('Classic Sweatshirt - Black'), findsWidgets);
     });
   });

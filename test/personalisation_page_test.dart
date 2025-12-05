@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:union_shop/models/cart_model.dart';
 import 'package:union_shop/personalisation_page.dart';
 
@@ -28,7 +27,7 @@ void main() {
     expect(find.byKey(const Key('personalisation_total')), findsOneWidget);
     expect(find.text('Estimated total: £3.00'), findsOneWidget);
 
-    // ---- Change to two lines of text ----
+    // Change to two lines of text
     final dropdownFinder =
         find.byKey(const Key('personalisation_line_dropdown'));
 
@@ -47,7 +46,7 @@ void main() {
     expect(find.text('£5.00'), findsOneWidget);
     expect(find.text('Estimated total: £5.00'), findsOneWidget);
 
-    // ---- Increase quantity to 2 → total £10.00 ----
+    // Increase quantity to 2 → total £10.00
     final incButtonFinder =
         find.byKey(const Key('personalisation_qty_increase'));
 

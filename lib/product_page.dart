@@ -232,7 +232,7 @@ class _ProductPageState extends State<ProductPage> {
     children.addAll([
       _buildQuantitySelector(context),
       const SizedBox(height: 24),
-      // ADD TO CART (this is what was missing)
+      // Add to cart
       SizedBox(
         width: double.infinity,
         child: ElevatedButton(
