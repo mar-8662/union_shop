@@ -25,16 +25,22 @@ class UnionFooter extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          // Dummy “links”
+          // Footer “links”
           Wrap(
             spacing: 16,
             runSpacing: 8,
-            children: const [
-              _FooterLink(label: 'Contact us'),
-              _FooterLink(label: 'FAQ'),
-              _FooterLink(label: 'Delivery & returns'),
-              _FooterLink(label: 'Terms & conditions'),
-              _FooterLink(label: 'Privacy notice'),
+            children: [
+              const _FooterLink(label: 'Contact us'),
+              const _FooterLink(label: 'FAQ'),
+              const _FooterLink(label: 'Delivery & returns'),
+              const _FooterLink(label: 'Terms & conditions'),
+              const _FooterLink(label: 'Privacy notice'),
+              _FooterLink(
+                label: 'Search',
+                onPressed: () {
+                  Navigator.pushNamed(context, '/search');
+                },
+              ),
             ],
           ),
 
@@ -55,15 +61,17 @@ class UnionFooter extends StatelessWidget {
 
 class _FooterLink extends StatelessWidget {
   final String label;
+  final VoidCallback? onPressed;
 
-  const _FooterLink({required this.label});
+  const _FooterLink({
+    required this.label,
+    this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {
-        // Dummy link – no navigation needed for the coursework requirement
-      },
+      onPressed: onPressed ?? () {},
       style: TextButton.styleFrom(
         padding: EdgeInsets.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:union_shop/about_page.dart';
+import 'package:union_shop/cart_page.dart';
 import 'package:union_shop/collections_page.dart';
 import 'package:union_shop/data/product_data.dart';
 import 'package:union_shop/footer.dart';
 import 'package:union_shop/models/product.dart';
 import 'package:union_shop/product_page.dart';
 import 'package:union_shop/sale_page.dart';
+import 'package:union_shop/search_page.dart';
 import 'package:union_shop/sign_in_page.dart';
 import 'package:union_shop/widgets/responsive_navbar.dart';
-import 'package:union_shop/cart_page.dart';
-import 'package:union_shop/personalisation_page.dart';
-import 'package:union_shop/print_shack_about_page.dart';
 
 void main() {
   runApp(const UnionShopApp());
@@ -34,8 +33,7 @@ class UnionShopApp extends StatelessWidget {
         '/sale': (context) => const SalePage(),
         '/signin': (context) => const SignInPage(),
         '/cart': (context) => const CartPage(),
-        '/personalisation': (context) => const PersonalisationPage(),
-        '/printshack': (context) => const PrintShackAboutPage(),
+        '/search': (context) => const SearchPage(),
       },
     );
   }
@@ -54,7 +52,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isWide = MediaQuery.of(context).size.width >= 800;
+    final size = MediaQuery.of(context).size;
+    final bool isWide = size.width >= 800;
+    final bool isNarrow = size.width < 500;
 
     return Scaffold(
       appBar: const ResponsiveNavbar(),
@@ -62,14 +62,16 @@ class HomeScreen extends StatelessWidget {
         children: [
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+            padding:
+                const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
             color: const Color(0xFF4d2963),
-            child: const Text(
+            child: Text(
               'BIG SALE! OUR ESSENTIAL RANGE HAS DROPPED IN PRICE! OVER 20% OFF! '
               'COME GRAB YOURS WHILE STOCK LASTS!',
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
+                fontSize: isNarrow ? 11 : 14,
               ),
               textAlign: TextAlign.center,
             ),
@@ -79,7 +81,9 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isNarrow ? 16 : 24,
+                    ),
                     child: AspectRatio(
                       aspectRatio: isWide ? 16 / 5 : 16 / 6,
                       child: Stack(
@@ -98,23 +102,23 @@ class HomeScreen extends StatelessWidget {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Text(
+                                Text(
                                   'Essential Range - Over 20% OFF!',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 32,
+                                    fontSize: isWide ? 32 : 24,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                const Text(
+                                Text(
                                   'Over 20% off our Essential Range. '
                                   'Come and grab yours while stock lasts!',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 16,
+                                    fontSize: isWide ? 16 : 14,
                                   ),
                                 ),
                                 const SizedBox(height: 16),
@@ -126,7 +130,8 @@ class HomeScreen extends StatelessWidget {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(
+                                    padding:
+                                        const EdgeInsets.symmetric(
                                       horizontal: 24,
                                       vertical: 12,
                                     ),
@@ -142,8 +147,10 @@ class HomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 32),
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isNarrow ? 16 : 24,
+                      vertical: 8,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -166,7 +173,8 @@ class HomeScreen extends StatelessWidget {
 
                             return GridView.builder(
                               shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
+                              physics:
+                                  const NeverScrollableScrollPhysics(),
                               itemCount: homeFeaturedProducts.length,
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
@@ -176,8 +184,10 @@ class HomeScreen extends StatelessWidget {
                                 childAspectRatio: 0.7,
                               ),
                               itemBuilder: (context, index) {
-                                final product = homeFeaturedProducts[index];
-                                return _HomeProductCard(product: product);
+                                final product =
+                                    homeFeaturedProducts[index];
+                                return _HomeProductCard(
+                                    product: product);
                               },
                             );
                           },
@@ -238,7 +248,8 @@ class _HomeProductCard extends StatelessWidget {
                     product.name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
+                    style:
+                        const TextStyle(fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 4),
                   Text('£${product.price.toStringAsFixed(2)}'),

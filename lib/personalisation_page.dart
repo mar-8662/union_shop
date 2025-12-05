@@ -80,7 +80,9 @@ class _PersonalisationPageState extends State<PersonalisationPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isWide = MediaQuery.of(context).size.width >= 900;
+    final size = MediaQuery.of(context).size;
+    final isWide = size.width >= 900;
+    final isNarrow = size.width < 600;
 
     return Scaffold(
       appBar: const ResponsiveNavbar(),
@@ -89,8 +91,10 @@ class _PersonalisationPageState extends State<PersonalisationPage> {
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                padding: EdgeInsets.symmetric(
+                  horizontal: isNarrow ? 16 : 24,
+                  vertical: 32,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [

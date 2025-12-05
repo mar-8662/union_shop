@@ -72,7 +72,7 @@ Use this checklist to track which spec items you’ve implemented.
   - Basic cart behaviour (e.g. show totals, simple checkout button)  
   - Checkout can place a “fake” order: no real payment needed
 
-- [ ] **Print Shack** (3%)  
+- [x] **Print Shack** (3%)  
   - Dedicated personalisation page  
   - Associated “About Print Shack” info section  
   - Form fields that dynamically update what’s shown based on user choices

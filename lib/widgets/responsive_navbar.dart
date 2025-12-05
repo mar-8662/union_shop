@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 /// A responsive top navigation bar:
 /// - On wide screens (desktop/tablet) it shows text links in a row.
 /// - On narrow screens (mobile) it shows a menu button that opens a bottom sheet.
-class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
+class ResponsiveNavbar extends StatelessWidget
+    implements PreferredSizeWidget {
   const ResponsiveNavbar({super.key});
 
   @override
@@ -19,7 +20,7 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
         final bool isDesktop = constraints.maxWidth >= 800;
 
         if (isDesktop) {
-          // DESKTOP: static navbar with links
+          // DESKTOP: static navbar with links + search icon
           return AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: theme.colorScheme.primary,
@@ -46,15 +47,12 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                   _NavLink(
                     label: 'Collections',
-                    navKey: const ValueKey('nav_collections_desktop'),
+                    navKey:
+                        const ValueKey('nav_collections_desktop'),
                     onTap: () {
                       Navigator.pushNamed(context, '/collections');
                     },
                   ),
-
-                  // NEW: The Print Shack dropdown
-                  const _PrintShackMenu(),
-
                   _NavLink(
                     label: 'SALE!',
                     navKey: const ValueKey('nav_sale_desktop'),
@@ -86,14 +84,32 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
                 ],
               ),
             ),
+            actions: [
+              IconButton(
+                key: const ValueKey('nav_search_desktop_icon'),
+                icon: const Icon(Icons.search),
+                tooltip: 'Search',
+                onPressed: () {
+                  Navigator.pushNamed(context, '/search');
+                },
+              ),
+            ],
           );
         } else {
-          // MOBILE: collapses to a menu button
+          // MOBILE: collapses to a menu button + search icon
           return AppBar(
             backgroundColor: theme.colorScheme.primary,
             elevation: 0,
             title: const Text('Union Shop'),
             actions: [
+              IconButton(
+                key: const ValueKey('nav_search_mobile_icon'),
+                icon: const Icon(Icons.search),
+                tooltip: 'Search',
+                onPressed: () {
+                  Navigator.pushNamed(context, '/search');
+                },
+              ),
               Builder(
                 builder: (context) => IconButton(
                   icon: const Icon(Icons.menu),
@@ -105,49 +121,50 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
                         return SafeArea(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
                             children: const [
                               _MobileNavItem(
                                 label: 'Home',
-                                navKey: ValueKey('nav_home_mobile'),
+                                navKey:
+                                    ValueKey('nav_home_mobile'),
                                 routeName: '/',
                               ),
                               _MobileNavItem(
                                 label: 'Collections',
-                                navKey: ValueKey('nav_collections_mobile'),
+                                navKey: ValueKey(
+                                    'nav_collections_mobile'),
                                 routeName: '/collections',
                               ),
                               _MobileNavItem(
-                                label: 'Print Shack – Personalisation',
-                                navKey: ValueKey(
-                                    'nav_printshack_personalisation_mobile'),
-                                routeName: '/personalisation',
-                              ),
-                              _MobileNavItem(
-                                label: 'Print Shack – About',
-                                navKey:
-                                    ValueKey('nav_printshack_about_mobile'),
-                                routeName: '/printshack',
-                              ),
-                              _MobileNavItem(
                                 label: 'SALE!',
-                                navKey: ValueKey('nav_sale_mobile'),
+                                navKey:
+                                    ValueKey('nav_sale_mobile'),
                                 routeName: '/sale',
                               ),
                               _MobileNavItem(
                                 label: 'About',
-                                navKey: ValueKey('nav_about_mobile'),
+                                navKey:
+                                    ValueKey('nav_about_mobile'),
                                 routeName: '/about',
                               ),
                               _MobileNavItem(
                                 label: 'Sign in',
-                                navKey: ValueKey('nav_signin_mobile'),
+                                navKey:
+                                    ValueKey('nav_signin_mobile'),
                                 routeName: '/signin',
                               ),
                               _MobileNavItem(
                                 label: 'Cart',
-                                navKey: ValueKey('nav_cart_mobile'),
+                                navKey:
+                                    ValueKey('nav_cart_mobile'),
                                 routeName: '/cart',
+                              ),
+                              _MobileNavItem(
+                                label: 'Search',
+                                navKey:
+                                    ValueKey('nav_search_mobile'),
+                                routeName: '/search',
                               ),
                             ],
                           ),
@@ -194,60 +211,6 @@ class _NavLink extends StatelessWidget {
     );
   }
 }
-
-class _PrintShackMenu extends StatelessWidget {
-  const _PrintShackMenu();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: PopupMenuButton<_PrintShackDestination>(
-        key: const ValueKey('nav_printshack_desktop'),
-        offset: const Offset(0, 32),
-        onSelected: (destination) {
-          switch (destination) {
-            case _PrintShackDestination.personalisation:
-              Navigator.pushNamed(context, '/personalisation');
-              break;
-            case _PrintShackDestination.about:
-              Navigator.pushNamed(context, '/printshack');
-              break;
-          }
-        },
-        itemBuilder: (context) => const [
-          PopupMenuItem<_PrintShackDestination>(
-            key: ValueKey('nav_printshack_personalisation_desktop'),
-            value: _PrintShackDestination.personalisation,
-            child: Text('Personalisation'),
-          ),
-          PopupMenuItem<_PrintShackDestination>(
-            key: ValueKey('nav_printshack_about_desktop'),
-            value: _PrintShackDestination.about,
-            child: Text('About Print Shack'),
-          ),
-        ],
-        child: Row(
-          children: const [
-            Text(
-              'The Print Shack',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-              ),
-            ),
-            Icon(
-              Icons.arrow_drop_down,
-              color: Colors.white,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-enum _PrintShackDestination { personalisation, about }
 
 class _MobileNavItem extends StatelessWidget {
   final String label;

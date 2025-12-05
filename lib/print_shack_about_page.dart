@@ -15,6 +15,8 @@ class PrintShackAboutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final printShackItems = _printShackProducts;
+    final size = MediaQuery.of(context).size;
+    final bool isNarrow = size.width < 600;
 
     return Scaffold(
       appBar: const ResponsiveNavbar(),
@@ -23,8 +25,10 @@ class PrintShackAboutPage extends StatelessWidget {
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                padding: EdgeInsets.symmetric(
+                  horizontal: isNarrow ? 16 : 24,
+                  vertical: 32,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
