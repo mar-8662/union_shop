@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 
+enum _PrintShackMenuItem {
+  personalisation,
+  about,
+}
+
 /// A responsive top navigation bar:
-/// - On wide screens (desktop/tablet) it shows text links in a row.
-/// - On narrow screens (mobile) it shows a menu button that opens a bottom sheet.
+/// - On wide screens (desktop/tablet) it shows text links in a row,
+///   including a "The Print Shack" dropdown and a search icon.
+/// - On narrow screens (mobile) it shows a menu button that opens
+///   a bottom sheet, plus a search icon.
 class ResponsiveNavbar extends StatelessWidget
     implements PreferredSizeWidget {
   const ResponsiveNavbar({super.key});
@@ -16,11 +23,10 @@ class ResponsiveNavbar extends StatelessWidget
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Desktop / large view breakpoint
         final bool isDesktop = constraints.maxWidth >= 800;
 
         if (isDesktop) {
-          // DESKTOP: static navbar with links + search icon
+          // DESKTOP NAVBAR
           return AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: theme.colorScheme.primary,
@@ -53,6 +59,52 @@ class ResponsiveNavbar extends StatelessWidget
                       Navigator.pushNamed(context, '/collections');
                     },
                   ),
+
+                  // THE PRINT SHACK DROPDOWN
+                  PopupMenuButton<_PrintShackMenuItem>(
+                    key: const ValueKey('nav_printshack_desktop'),
+                    tooltip: 'The Print Shack',
+                    onSelected: (value) {
+                      switch (value) {
+                        case _PrintShackMenuItem.personalisation:
+                          Navigator.pushNamed(
+                              context, '/personalisation');
+                          break;
+                        case _PrintShackMenuItem.about:
+                          Navigator.pushNamed(
+                              context, '/printshack');
+                          break;
+                      }
+                    },
+                    itemBuilder: (context) => const [
+                      PopupMenuItem<_PrintShackMenuItem>(
+                        key: ValueKey(
+                            'nav_printshack_personalisation_desktop'),
+                        value: _PrintShackMenuItem.personalisation,
+                        child: Text('Personalisation'),
+                      ),
+                      PopupMenuItem<_PrintShackMenuItem>(
+                        value: _PrintShackMenuItem.about,
+                        child: Text('The Union Print Shack'),
+                      ),
+                    ],
+                    child: Row(
+                      children: const [
+                        Text(
+                          'The Print Shack',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                  ),
+
                   _NavLink(
                     label: 'SALE!',
                     navKey: const ValueKey('nav_sale_desktop'),
@@ -96,7 +148,7 @@ class ResponsiveNavbar extends StatelessWidget
             ],
           );
         } else {
-          // MOBILE: collapses to a menu button + search icon
+          // MOBILE NAVBAR
           return AppBar(
             backgroundColor: theme.colorScheme.primary,
             elevation: 0,
@@ -119,54 +171,74 @@ class ResponsiveNavbar extends StatelessWidget
                       context: context,
                       builder: (context) {
                         return SafeArea(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                            children: const [
-                              _MobileNavItem(
-                                label: 'Home',
-                                navKey:
-                                    ValueKey('nav_home_mobile'),
-                                routeName: '/',
-                              ),
-                              _MobileNavItem(
-                                label: 'Collections',
-                                navKey: ValueKey(
-                                    'nav_collections_mobile'),
-                                routeName: '/collections',
-                              ),
-                              _MobileNavItem(
-                                label: 'SALE!',
-                                navKey:
-                                    ValueKey('nav_sale_mobile'),
-                                routeName: '/sale',
-                              ),
-                              _MobileNavItem(
-                                label: 'About',
-                                navKey:
-                                    ValueKey('nav_about_mobile'),
-                                routeName: '/about',
-                              ),
-                              _MobileNavItem(
-                                label: 'Sign in',
-                                navKey:
-                                    ValueKey('nav_signin_mobile'),
-                                routeName: '/signin',
-                              ),
-                              _MobileNavItem(
-                                label: 'Cart',
-                                navKey:
-                                    ValueKey('nav_cart_mobile'),
-                                routeName: '/cart',
-                              ),
-                              _MobileNavItem(
-                                label: 'Search',
-                                navKey:
-                                    ValueKey('nav_search_mobile'),
-                                routeName: '/search',
-                              ),
-                            ],
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                              children: const [
+                                _MobileNavItem(
+                                  label: 'Home',
+                                  navKey:
+                                      ValueKey('nav_home_mobile'),
+                                  routeName: '/',
+                                ),
+                                _MobileNavItem(
+                                  label: 'Collections',
+                                  navKey: ValueKey(
+                                      'nav_collections_mobile'),
+                                  routeName: '/collections',
+                                ),
+                                _MobileNavItem(
+                                  label: 'SALE!',
+                                  navKey: ValueKey(
+                                      'nav_sale_mobile'),
+                                  routeName: '/sale',
+                                ),
+                                _MobileNavItem(
+                                  label: 'About',
+                                  navKey: ValueKey(
+                                      'nav_about_mobile'),
+                                  routeName: '/about',
+                                ),
+
+                                // Print Shack – Personalisation
+                                _MobileNavItem(
+                                  label:
+                                      'Print Shack - Personalisation',
+                                  navKey: ValueKey(
+                                      'nav_printshack_personalisation_mobile'),
+                                  routeName: '/personalisation',
+                                ),
+
+                                // Print Shack – About
+                                _MobileNavItem(
+                                  label: 'Print Shack - About',
+                                  navKey: ValueKey(
+                                      'nav_printshack_about_mobile'),
+                                  routeName: '/printshack',
+                                ),
+
+                                _MobileNavItem(
+                                  label: 'Sign in',
+                                  navKey: ValueKey(
+                                      'nav_signin_mobile'),
+                                  routeName: '/signin',
+                                ),
+                                _MobileNavItem(
+                                  label: 'Cart',
+                                  navKey:
+                                      ValueKey('nav_cart_mobile'),
+                                  routeName: '/cart',
+                                ),
+                                _MobileNavItem(
+                                  label: 'Search',
+                                  navKey: ValueKey(
+                                      'nav_search_mobile'),
+                                  routeName: '/search',
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },
