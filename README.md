@@ -84,184 +84,180 @@ flutter test
 
 ## 3. Usage Instructions
 
-Navigation overview
+### 3.1 Navigation Overview
+
+- **Global responsive navbar (all pages)**
+  - **Desktop (≥ 800px)**
+    - Links: `Home`, `Collections`, `The Print Shack` (dropdown), `SALE!`, `About`, `Sign in`, `Cart`
+    - Icon: search icon → opens `SearchPage`
+  - **Mobile (< 800px)**
+    - `AppBar` shows title, search icon, and menu button
+    - Menu button opens a bottom-sheet menu with:
+      - `Home`
+      - `Collections`
+      - `SALE!`
+      - `About`
+      - `Print Shack – Personalisation`
+      - `Print Shack – About`
+      - `Sign in`
+      - `Cart`
+      - `Search`
+
+---
+
+### 3.2 Main User Flows
+
+#### Home (`HomeScreen`)
+
+- Shows:
+  - Top sale banner promoting the Essential Range
+  - Hero banner with “Essential Range – Over 20% OFF!”
+  - `Featured products` grid using `homeFeaturedProducts` from `main.dart`
+- Behaviour:
+  - Tapping a featured product → opens `ProductPage` for that product
+
+---
+
+#### Collections (`CollectionsPage`)
+
+- Collections grid built dynamically from:
+  - `productIdsByCollection`
+  - `dummyProducts` in `product_data.dart`
+- **Filter bar**
+  - Filter by category: `All collections`, `Seasonal`, `Sale`, `Clothing`, `Essentials`
+  - Sort options: `A–Z`, `Z–A`
+- Behaviour:
+  - Tapping a collection tile (e.g. `Autumn Favourites`, `Essential Range`) → opens `CollectionDetailPage` for that collection
+
+---
+
+#### Collection Details (`CollectionDetailPage`)
+
+- For a selected collection (e.g. `Clothing`), shows:
+  - Collection title and subtitle
+  - Filter dropdown (e.g. `All products`, `Hoodies & Sweatshirts`, `Accessories`)
+  - Sort dropdown (`Featured`, `Price, low to high`, `Price, high to low`)
+  - Products loaded via `productsForCollection(...)` from `product_data.dart`
+  - Pagination with previous/next page buttons
+- Behaviour:
+  - Tapping a product card → opens `ProductPage` for that product
+
+---
+
+#### Product Page & Cart Flow (`ProductPage` + `CartModel`)
+
+- Product view:
+  - Large square image with thumbnail gallery
+  - Product name, price, and “Tax included.” text
+  - Dropdowns for `Colour` and `Size` (if defined for that product)
+  - Quantity selector with `+ / –` buttons
+- **ADD TO CART**:
+  - Wraps `Product` as a `CollectionProduct`
+  - Adds item to global `cartModel` with:
+    - selected colour
+    - selected size
+    - selected quantity
+  - Shows a `SnackBar` with “Added … to your cart” and `VIEW CART` action
+- Extra UI:
+  - `Buy with Shop` button (UI only)
+  - `More payment options` link (UI only)
+  - Social share buttons (Share / Tweet / Pin It)
+  - `BACK TO AUTUMN FAVOURITES` text link
+
+---
+
+#### Cart (`CartPage`)
+
+- Uses shared `CartModel` to render either:
+- **Empty state**
+  - Title: `Your cart`
+  - Message: `Your cart is currently empty.`
+  - Button: `CONTINUE SHOPPING` → returns to `HomeScreen`
+- **Filled state**
+  - Table-style layout with columns:
+    - **Product**: image, name, colour, size, `Remove` link
+    - **Price**: unit price
+    - **Quantity**: dropdown (1–5)
+    - **Total**: per-line total
+  - Below items:
+    - `Add a note to your order` text area
+    - `Subtotal` label using `cartModel.subtotal`
+    - Text: `Tax included and shipping calculated at checkout`
+    - `UPDATE` button → shows “Cart updated” `SnackBar`
+    - `CHECK OUT` button → shows “Order placed (demo only)` and clears cart
+  - Quantity changes update line totals and subtotal immediately
+
+---
+
+#### Print Shack – Personalisation (`PersonalisationPage`)
+
+- Configurable personalisation “product”:
+  - Dropdown: `One line of text` / `Two lines of text`
+  - Text fields for each line with character limit
+  - Quantity selector
+  - Dynamic `Estimated total`:
+    - £3 for one line
+    - £5 for two lines
+    - multiplied by quantity
+- **ADD TO CART**:
+  - Creates a `CollectionProduct` named `Print Shack Personalisation`
+  - Adds to `cartModel` with:
+    - colour `"Custom"`
+    - size = selected line option
+  - Shows `SnackBar` with `VIEW CART` action
+- Layout mirrors product-style page (preview on one side, form on the other)
+
+---
+
+#### Print Shack – About (`PrintShackAboutPage`)
+
+- Static info/marketing page for the print service:
+  - Three-panel hero row:
+    - Front print examples
+    - Main “The Union Print Shack” panel
+    - Back print examples
+  - Section headings (e.g. *Make it yours at The Union Print Shack*, *Simple pricing, no surprises*, *Personalisation terms & conditions*)
+  - Supporting copy explaining:
+    - what can be personalised
+    - basic pricing
+    - non-refundable terms
+  - “Popular Print Shack products” section using Print Shack items from `dummyProducts`
+    - e.g. `Print Shack Custom Hoodie`, `Print Shack Custom Tee`, `Print Shack Custom Tote`
+
+---
+
+#### Search (`SearchPage`)
+
+- UI:
+  - Heading: `SEARCH OUR SITE`
+  - Search input field + `SUBMIT` button
+  - Helper text when no query has been entered
+- Behaviour:
+  - Searches `dummyProducts` by:
+    - product `name`
+    - product `description`
+  - Shows a list of matching products:
+    - name + price + collection
+    - tapping a result opens that product’s `ProductPage`
+
+---
+
+#### Sign In (`SignInPage`)
+
+- Centered auth-style card:
+  - `The UNION` wordmark
+  - Heading: `Sign in to your shop account`
+  - Primary `Sign in with shop` button (UI only)
+  - Divider with “or”
+  - Email `TextField`
+  - Grey `Continue` button (UI only)
+- Below the card:
+  - `Popular union products` strip with simple product cards, e.g.:
+    - `Portsmouth City Postcard`
+    - `Union Hoodie`
+    - `Union Stainless Steel Bottle`
+- Footer reused from other pages for a consistent layout
 
-The top responsive navbar appears on all pages:
-
-Desktop view (≥ 800px):
-
-Home, Collections, The Print Shack (dropdown), SALE!, About, Sign in, Cart, and a Search icon
-
-Mobile view (< 800px):
-
-AppBar shows title, Search icon, and a menu button
-
-Menu opens a bottom sheet with links to all major pages, including:
-
-Home
-
-Collections
-
-SALE!
-
-About
-
-Print Shack – Personalisation
-
-Print Shack – About
-
-Sign in
-
-Cart
-
-Search
-
-Main user flows
-Home
-
-Shows:
-
-Top sale banner
-
-Hero banner promoting the Essential Range
-
-“Featured products” grid using homeFeaturedProducts from main.dart
-
-Clicking a featured product opens the ProductPage for that item.
-
-Collections
-
-CollectionsPage displays a dynamic grid of collection tiles built from productIdsByCollection and dummyProducts.
-
-Filter bar:
-
-Filter by category: Seasonal, Sale, Clothing, Essentials, etc.
-
-Sort A–Z or Z–A
-
-Clicking a tile (e.g. “Autumn Favourites”, “Essential Range”) opens CollectionDetailPage.
-
-Collection details
-
-For a given collection (e.g. “Clothing”):
-
-Displays:
-
-Collection title and subtitle
-
-Filter dropdown: All products, Hoodies & Sweatshirts, Accessories
-
-Sort dropdown: Featured, Price, low to high, Price, high to low
-
-Products loaded from product_data.dart via productsForCollection.
-
-Pagination with next/previous page buttons.
-
-Clicking any product card opens its ProductPage.
-
-Product page and cart flow
-
-On ProductPage:
-
-Large image with thumbnail gallery
-
-Product name, price, “Tax included” text
-
-Dropdowns for Colour and Size (when available)
-
-Quantity selector (+/– buttons)
-
-ADD TO CART button:
-
-Converts the Product into a CollectionProduct
-
-Adds it to the global cartModel with chosen colour, size, and quantity
-
-Shows a Snackbar with an option to “VIEW CART”
-
-Additional buttons:
-
-“Buy with Shop” (UI only)
-
-“More payment options” (UI only)
-
-Social share buttons and “BACK TO AUTUMN FAVOURITES” link
-
-Cart page
-
-CartPage uses the shared CartModel:
-
-Empty state:
-
-“Your cart is currently empty” + “CONTINUE SHOPPING” button
-
-Filled state:
-
-Table-style layout showing:
-
-Product (image, name, colour, size, “Remove” link)
-
-Price (unit)
-
-Quantity (dropdown 1–5)
-
-Total per item
-
-Subtotal, note field, UPDATE and CHECK OUT buttons
-
-Quantity changes update totals and subtotal live.
-
-Print Shack – Personalisation
-
-PersonalisationPage provides:
-
-Dropdown for number of lines of text
-
-Text fields for each personalisation line
-
-Quantity selector
-
-Dynamic total price based on options
-
-ADD TO CART button that adds a “Print Shack Custom” style item to the cart
-
-Layout follows the same visual style as other product pages.
-
-Print Shack – About
-
-PrintShackAboutPage acts as a marketing/info page:
-
-Large hero image row (hoodie, logo, back print)
-
-Section headings: “Make It Yours at The Union Print Shack”, etc.
-
-Bullet-style paragraphs on pricing, turnaround, terms & conditions
-
-A small selection of related products from dummyProducts (e.g. custom hoodie/tee/tote)
-
-Search
-
-SearchPage:
-
-“SEARCH OUR SITE” heading
-
-Input field + “SUBMIT” button
-
-Basic search over dummyProducts names and descriptions
-
-Results list of matching products (clicking could open their ProductPage)
-
-Sign in
-
-SignInPage:
-
-Card UI with “The UNION” wordmark
-
-“Sign in with shop” primary button (UI only)
-
-Email input and grey “Continue” button (UI only)
-
-A horizontal product strip titled “Popular union products”
 
 4. Project Structure and Technologies Used
 Folder structure (high-level)
